@@ -1,0 +1,102 @@
+Description:
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8
+
+Solution:
+链表操作练习，普通的加法逻辑，一些边界条件需要考虑好。为了复用空间增加了时间，应该直接新开一个链表返回的，会方便很多。
+
+Code:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2)
+{
+    
+    struct ListNode* l1_copy = l1;
+    struct ListNode* l2_copy = l2;
+    
+    int rest = 0;
+    int res = 0;
+    int flag = 0;
+    
+    while(l1_copy || l2_copy)
+    {
+        if (l1_copy && !l2_copy)
+        {
+            flag = 1;
+            break;
+        }
+        else if (!l1_copy && l2_copy)
+        {
+            flag = 2;
+            break;
+        }
+        
+        l1_copy = l1_copy->next;
+        l2_copy = l2_copy->next;
+    }
+    
+    if (flag == 1 || flag == 0)
+    {
+        l1_copy = l1;
+        l2_copy = l2;
+    }
+    else if (flag == 2)
+    {
+        l1_copy = l2;
+        l2_copy = l1;
+    }
+    
+    
+    while(l1_copy || l2_copy)
+    {
+        if (l1_copy && l2_copy)
+        {
+            res = l1_copy->val + l2_copy->val + rest;
+            l1_copy->val = res % 10;
+            rest = res / 10;
+        }
+        else if (l1_copy && !l2_copy)
+        {
+            res = l1_copy->val + rest;
+            l1_copy->val = res % 10;
+            rest = res / 10;
+        }
+        if (l1_copy)
+            l1_copy = l1_copy->next;
+        
+        if (l2_copy)
+            l2_copy = l2_copy->next;
+        
+    }
+    
+    if (flag == 2)
+        l1_copy = l2;
+    else l1_copy = l1;
+    
+    while(l1_copy->next)
+        l1_copy = l1_copy->next;
+    
+    if (rest != 0)
+    {
+        struct ListNode* new_node = (struct ListNode *)malloc(sizeof(struct ListNode));
+        new_node->val = rest;
+        new_node->next = NULL;
+        l1_copy->next = new_node;
+    }
+    
+    if (flag == 2)
+        return l2;
+    else return l1;
+    
+    
+}
