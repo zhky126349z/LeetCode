@@ -1,0 +1,69 @@
+Description:
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+Solution:
+遍历，维护访问组，遇到'1'开始广搜，把周围所有的'1'访问掉，然后sum++
+
+Code:
+int numIslands(char** grid, int gridRowSize, int gridColSize) {
+    
+    if (gridRowSize == 0 || gridColSize == 0)
+        return 0;
+    
+    bool visit[gridRowSize][gridColSize];
+    int queue[gridRowSize * gridColSize][2];
+    int index = -1;
+    int sum = 0;
+    
+    memset(visit, false, sizeof(visit));
+    memset(queue, 0, sizeof(queue));
+    
+    for (int i = 0; i < gridRowSize; i ++){
+        for (int j = 0; j < gridColSize; j ++){
+            if (grid[i][j] == '0'){
+                visit[i][j] = true;
+            }else if (grid[i][j] == '1' && visit[i][j] == false){
+                index ++;
+                queue[index][0] = i;
+                queue[index][1] = j;
+                
+                int now_row = 0;
+                int now_col = 0;
+                
+                while(index >= 0){
+                    now_row = queue[index][0];
+                    now_col = queue[index][1];
+                    queue[index][0] = 0;
+                    queue[index][1] = 0;
+                    index --;
+                    
+                    visit[now_row][now_col] = true;
+                    
+                    if (now_row - 1 >= 0 && grid[now_row - 1][now_col] == '1' && visit[now_row - 1][now_col] == false){
+                        index ++;
+                        queue[index][0] = now_row - 1;
+                        queue[index][1] = now_col;
+                    }
+                    if (now_col + 1 < gridColSize && grid[now_row][now_col + 1] == '1' && visit[now_row][now_col + 1] == false){
+                        index ++;
+                        queue[index][0] = now_row;
+                        queue[index][1] = now_col + 1;
+                    }
+                    if (now_row + 1 < gridRowSize && grid[now_row + 1][now_col] == '1' && visit[now_row + 1][now_col] == false){
+                        index ++;
+                        queue[index][0] = now_row + 1;
+                        queue[index][1] = now_col;
+                    }
+                    if (now_col - 1 >=0 && grid[now_row][now_col - 1] == '1' && visit[now_row][now_col - 1] == false){
+                        index ++;
+                        queue[index][0] = now_row;
+                        queue[index][1] = now_col - 1;
+                    }
+                    
+                }
+                sum ++;
+            }
+        }
+    }
+    return sum;
+}
