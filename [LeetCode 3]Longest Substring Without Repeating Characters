@@ -1,0 +1,41 @@
+Description:
+Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given "abcabcbb", the answer is "abc", which the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+Subscribe to see which companies asked this question.
+
+Solution:
+遍历一遍，记录开头结尾，维护一个flag数组记录已有字符，结尾遇到已有字符头就前进一步，水题。一开始忘记记录第一个字符了。
+
+Code:
+int lengthOfLongestSubstring(char* s) {
+    int begin = 0;
+    int end = 0;
+    int len = strlen(s);
+    int max = 0;
+    int flag[300];
+    
+    memset(flag, 0, sizeof(flag));
+    
+    flag[s[begin]] ++;
+    
+    while(end < len){
+        if (end - begin + 1 > max)
+            max = end - begin + 1;
+        end ++;
+        while(begin != end && flag[s[end]] != 0){
+            flag[s[begin]] --;
+            begin ++;
+        }
+        flag[s[end]] ++;
+    }
+    
+    return max;
+}
