@@ -1,0 +1,52 @@
+Description:
+Given a binary tree, return the postorder traversal of its nodes' values.
+
+For example:
+Given binary tree {1,#,2,3},
+   1
+    \
+     2
+    /
+   3
+return [3,2,1].
+
+Note: Recursive solution is trivial, could you do it iteratively?
+
+Solution:
+要求是用迭代来实现二叉树的后序(PostOrder)遍历。使用stack来实现，正好和先序完全相反，所以倒过来先往右边访问，然后不断在vector的首位记录val值，最后输出。
+先序(PreOrder)，跟后序相反，中左右。压栈时vector末尾记录val值。
+中序(InOrder)，左中右。pop时vector末尾记录val值。
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+#include <stack>
+#include <list>
+ 
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> result;
+        stack<TreeNode*> st;
+        TreeNode* p = root;
+        while(!st.empty() || p != NULL) {
+            if (p != NULL) {
+                st.push(p);
+                result.insert(result.begin(), p -> val);
+                p = p -> right;
+            } else {
+                TreeNode* temp = st.top();
+                st.pop();
+                p = temp -> left;
+            }
+        }
+        return result;
+    }
+};
