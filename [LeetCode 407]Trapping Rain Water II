@@ -1,0 +1,154 @@
+Description:
+Given an m x n matrix of positive integers representing the height of each unit cell in a 2D elevation map, compute the volume of water it is able to trap after raining.
+
+Note:
+Both m and n are less than 110. The height of each unit cell is greater than 0 and is less than 20,000.
+
+Example:
+
+Given the following 3x6 height map:
+[
+  [1,4,3,1,3,2],
+  [3,2,1,3,2,4],
+  [2,3,3,2,3,1]
+]
+
+Return 4.
+
+The above image represents the elevation map [[1,4,3,1,3,2],[3,2,1,3,2,4],[2,3,3,2,3,1]] before the rain.
+
+After the rain, water are trapped between the blocks. The total volume of water trapped is 4.
+
+Solution:
+自己的算法用了一个BFS扫描。遍历每个节点并从节点向四周BFS，标记访问，每次假设起始点是最低点，搜出以这个点为最低点的“水池”，然后计算被困住的水量。
+为了处理一些特殊情况，然后把搜出的水池修改为边界高度，取消访问，继续BFS。
+在处理边界条件和各种访问标记时，出了很多小问题。并且四个方向的访问，可以用一个方向数组[-1,0,1,0]这种来进行，一开始写的太粗糙了也。
+并且这个算法时间复杂度极高，虽然AC了但是贼特么复杂。
+看了下别人的解题报告，用优先队列，存储一个边界。一开始把四周的cell都加入进优先队列里，然后每次从队列里取出一个高度最低的cell，标记访问，访问他四周没被访问的cell，
+高depth，总水量就加depth。然后将被访问的cell压队，高度记为访问他的cell的高度和自身高度中较高的高度。（有机会自己实现一下）
+
+Code:
+#include <queue>
+
+class Solution {
+public:
+    
+int trapRainWater(vector<vector<int> >& heightMap) {
+        vector<vector<int> > heightMapCopy = heightMap;
+        queue<pair<int,int> > bfs;
+        vector<pair<int,int> > cal;
+
+        if (heightMapCopy.empty()){
+            return 0;
+        }
+
+        int width = heightMapCopy.size();
+        int length = heightMapCopy[0].size();
+        int ans = 0;
+
+
+        bool visit[width][length];
+        memset(visit, false, sizeof(visit));
+
+        for (int i = 0; i < width; i ++) {
+            for (int j = 0; j < length; j ++) {
+
+                int edge = -1;
+                int sum = 0;
+
+                bfs.push(make_pair(i, j));
+
+                while(!bfs.empty()) {
+                    pair<int,int> coordinate = bfs.front();
+                    bfs.pop();
+                    int x = coordinate.first;
+                    int y = coordinate.second;
+
+                    if (x - 1 >= 0 && y + 1 < length && x + 1 < width && y - 1 >= 0 && visit[x][y] == false &&
+                        (heightMapCopy[x - 1][y] >= heightMapCopy[x][y] || visit[x - 1][y] == true) &&
+                        (heightMapCopy[x][y + 1] >= heightMapCopy[x][y] || visit[x][y + 1] == true) &&
+                        (heightMapCopy[x + 1][y] >= heightMapCopy[x][y] || visit[x + 1][y] == true) &&
+                        (heightMapCopy[x][y - 1] >= heightMapCopy[x][y] || visit[x][y - 1] == true)) {
+
+                        cal.push_back(make_pair(x, y));
+                        visit[x][y] = true;
+                        if (visit[x - 1][y] == false)
+                            bfs.push(make_pair(x - 1, y));
+                        if (visit[x][y + 1] == false)
+                            bfs.push(make_pair(x, y + 1));
+                        if (visit[x + 1][y] == false)
+                            bfs.push(make_pair(x + 1, y));
+                        if (visit[x][y - 1] == false)
+                            bfs.push(make_pair(x, y - 1));
+
+                    }
+                }
+
+                for (int k = 0; k < cal.size(); k ++) {
+                    pair<int,int> coordinate = cal[k];
+                    int x = 0;
+                    int y = 0;
+
+                    x = coordinate.first - 1;
+                    y = coordinate.second;
+                    while(x - 1 >= 0 && visit[x][y] == true)
+                        x --;
+                    if (edge == -1 || edge > heightMapCopy[x][y])
+                        edge = heightMapCopy[x][y];
+
+                    x = coordinate.first;
+                    y = coordinate.second + 1;
+                    while(y + 1 < length && visit[x][y] == true)
+                        y ++;
+                    if (edge == -1 || edge > heightMapCopy[x][y])
+                        edge = heightMapCopy[x][y];
+
+                    x = coordinate.first + 1;
+                    y = coordinate.second;
+                    while(x + 1 < width && visit[x][y] == true)
+                        x ++;
+                    if (edge == -1 || edge > heightMapCopy[x][y])
+                        edge = heightMapCopy[x][y];
+
+                    x = coordinate.first;
+                    y = coordinate.second - 1;
+                    while(y - 1 >= 0 && visit[x][y] == true)
+                        y --;
+                    if (edge == -1 || edge > heightMapCopy[x][y])
+                        edge = heightMapCopy[x][y];
+
+                }
+
+
+                // if (edge != -1)
+                //     printf("edge: %d\n",edge);
+                for (int k = 0; k < cal.size(); k ++) {
+                    pair<int,int> coordinate = cal[k];
+                    int x = coordinate.first;
+                    int y = coordinate.second;
+                    // cout<<x<<' '<<y<<'\n';
+
+                    if (heightMapCopy[x][y] >= edge)
+                    {
+                        visit[x][y] = false;
+                        continue;
+                    }
+
+
+                    sum += (edge - heightMapCopy[x][y]);
+                    heightMapCopy[x][y] = edge;
+                    visit[x][y] = false;
+                }
+
+                ans += sum;
+                cal.clear();
+
+
+            }
+        }
+
+
+        return ans;
+
+    }
+};
