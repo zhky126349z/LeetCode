@@ -1,0 +1,73 @@
+Description:
+Given a binary tree, return the bottom-up level order traversal of its nodes' values. (ie, from left to right, level by level from leaf to root).
+
+For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its bottom-up level order traversal as:
+[
+  [15,7],
+  [9,20],
+  [3]
+]
+
+Solution:
+二叉树层次遍历，BFS。维护一个flag数组，记录每行最右边的那个结点，以此划分出层次。从上往下顺序访问，记录结果时在result首位插入，最后顺序输出。
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ #include <queue>
+ 
+class Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        vector<vector<int>> result;
+        vector<int> level_res;
+        queue<TreeNode*> q;
+        vector<TreeNode*> flag;
+        int lv = 0;
+        flag.assign(10000, NULL);
+        
+        if (root == NULL) {
+            return result;
+        }
+        
+        q.push(root);
+        flag[lv] = root;
+        
+        while (!q.empty()) {
+            TreeNode* p = q.front();
+            q.pop();
+            level_res.push_back(p -> val);
+            
+            if (p -> left != NULL) {
+                q.push(p -> left);
+                flag[lv + 1] = p -> left;
+            }
+            if (p -> right != NULL) {
+                q.push(p -> right);
+                flag[lv + 1] = p -> right;
+            }
+            
+            if (p == flag[lv]) {
+                result.insert(result.begin(), level_res);
+                level_res.clear();
+                lv ++;
+            }
+        }
+        
+        return result;
+    }
+};
