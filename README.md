@@ -7,4 +7,5 @@
 2017.6.15 打卡[LeetCode 407. Trapping Rain Water II], BFS/Priority queue<br>
 2017.6.19 打卡[LeetCode 145. Binary Tree Postorder Traversal], Tree/stack<br>
 2017.6.20 打卡[LeetCode 107. Binary Tree Level Order Traversal II], Tree/BFS<br>
-2017.6.20 打开[LeetCode 324. Wiggle Sort II], Sort<br>
+2017.6.20 打卡[LeetCode 324. Wiggle Sort II], Sort<br>
+2017.6.21 打卡[LeetCode 128. Longest Consecutive Sequence], Map/Union find<br>
