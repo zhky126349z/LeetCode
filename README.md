@@ -9,3 +9,4 @@
 2017.6.20 打卡[LeetCode 107. Binary Tree Level Order Traversal II], Tree/BFS<br>
 2017.6.20 打卡[LeetCode 324. Wiggle Sort II], Sort<br>
 2017.6.21 打卡[LeetCode 128. Longest Consecutive Sequence], Map/Union find<br>
+2017.6.22 打卡[LeetCode 287. Find the Duplicate Number], Binary Search/Two pointer<br>
