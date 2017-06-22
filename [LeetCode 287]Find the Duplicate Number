@@ -1,0 +1,40 @@
+Description:
+Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.
+
+Note:
+1.You must not modify the array (assume the array is read only).
+2.You must use only constant, O(1) extra space.
+3.Your runtime complexity should be less than O(n2).
+4.There is only one duplicate number in the array, but it could be repeated more than once.
+
+Solution:
+1.二分的思想，left = 0，right = n，mid = (left + right) / 2，如果有超过mid个数小于mid，根据抽屉原理，必然有重复的数，以此缩减区间。
+2.linked list寻找环的思想，维护一个快指针和慢指针，慢指针步长为1，快指针步长位2，当快慢指针重合说明进入了环，然后让快指针从头一步一步进，当快慢指针再次重合时，即为重复的数。
+
+Code:
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int left = 0;
+        int right = nums.size() - 1;
+        int mid = 0;
+        int cnt = 0;
+        
+        while (left < right) {
+            mid = (left + right) / 2;
+            cnt = 0;
+            
+            for (int i : nums) {
+                if (i <= mid)
+                    cnt ++;
+            }
+            
+            if (cnt > mid) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+};
