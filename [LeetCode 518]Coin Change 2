@@ -1,0 +1,37 @@
+Description:
+You are given coins of different denominations and a total amount of money. Write a function to compute the number of combinations that make up that amount. You may assume that you have infinite number of each kind of coin.
+
+Note: You can assume that
+
+0 <= amount <= 5000
+1 <= coin <= 5000
+the number of coins is less than 500
+the answer is guaranteed to fit into signed 32-bit integer
+
+Solution:
+一道dp题，for i in coins, dp[j] += dp[j - i]。外循环遍历coins，可以保证在更新的时候不会出现重复的情况（？）。
+一开始想的是外循环遍历dp数组，发现会出现重复的情况导致错误。
+
+Code:
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        int dp[5001];
+        memset(dp, 0, sizeof(dp));
+        
+        if (amount == 0) {
+            return 1;
+        }
+        if (coins.size() == 0) {
+            return 0;
+        }
+        
+        dp[0] = 1;
+        for (int i : coins) {
+            for (int j = i; j <= amount; j ++) {
+                dp[j] += dp[j - i];
+            }
+        }
+        return dp[amount];
+    }
+};
