@@ -1,0 +1,72 @@
+Description:
+There are N students in a class. Some of them are friends, while some are not. Their friendship is transitive in nature. For example, if A is a direct friend of B, and B is a direct friend of C, then A is an indirect friend of C. And we defined a friend circle is a group of students who are direct or indirect friends.
+
+Given a N*N matrix M representing the friend relationship between students in the class. If M[i][j] = 1, then the ith and jth students are direct friends with each other, otherwise not. And you have to output the total number of friend circles among all the students.
+
+Example 1:
+Input: 
+[[1,1,0],
+ [1,1,0],
+ [0,0,1]]
+Output: 2
+Explanation:The 0th and 1st students are direct friends, so they are in a friend circle. 
+The 2nd student himself is in a friend circle. So return 2.
+Example 2:
+Input: 
+[[1,1,0],
+ [1,1,1],
+ [0,1,1]]
+Output: 1
+Explanation:The 0th and 1st students are direct friends, the 1st and 2nd students are direct friends, 
+so the 0th and 2nd students are indirect friends. All of them are in the same friend circle, so return 1.
+Note:
+N is in range [1,200].
+M[i][i] = 1 for all students.
+If M[i][j] = 1, then M[j][i] = 1.
+
+Solution:
+并查集，同找亲戚的那种。维护了一个father[]，读取关系的时动态维护他们的father，相当于把有关系的合并成一棵树，最后输出树的个数。
+
+Code:
+#include <set>
+
+class Solution {
+public:
+
+    int father[1000];
+    
+    int find(int x) {
+        int res = father[x];
+        if (father[x] != x) {
+            res = find(father[x]);
+        }
+        return res;
+    }
+    
+    int findCircleNum(vector<vector<int>>& M) {
+        
+        set<int> res;
+        
+        if (M.size() == 0)
+            return 0;
+        
+        for (int i = 0; i < M.size(); i ++)
+            father[i] = i;
+        
+        for (int i = 0; i < M.size(); i ++) {
+            for (int j = i; j < M.size(); j ++) {
+                int i_father = find(i);
+                int j_father = find(j);
+                if (M[i][j] == 1 && i_father != j_father) {
+                    father[j_father] = i_father;
+                }
+            }
+        }
+        
+        for (int i = 0; i < M.size(); i ++) {
+            res.insert(find(i));
+        }
+        
+        return res.size();
+    }
+};
