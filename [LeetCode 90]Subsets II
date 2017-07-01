@@ -1,0 +1,46 @@
+Description:
+Given a collection of integers that might contain duplicates, nums, return all possible subsets.
+
+Note: The solution set must not contain duplicate subsets.
+
+For example,
+If nums = [1,2,2], a solution is:
+
+Solution:
+全排列，可以有重复元素，但是不能有重复子集。用set存储所有子集，一个一个元素加入，每次加入一个元素的时候增加所有已有子集+该元素所形成的集合。
+错了一次，因为出现有子集的元素相同但是顺序不同，set无法辨识出来，考虑排序，成功。
+
+Code:
+#include <set>
+
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        set<vector<int>> subsets;
+        set<vector<int>> copy;
+        vector<vector<int>> ans;
+        int len = nums.size();
+        int i = 0;
+        vector<int> begin;
+        subsets.insert(begin);
+        sort(nums.begin(), nums.end());
+        
+        while (i < len) {
+            copy = subsets;
+            for (vector<int> subset : subsets) {
+                vector<int> newsub = subset;
+                newsub.push_back(nums[i]);
+                copy.insert(newsub);
+            }
+            subsets = copy;
+            
+            i ++;
+        }
+        
+        for (vector<int> subset : subsets) {
+            ans.push_back(subset);
+        }
+        
+        return ans;
+    }
+};
