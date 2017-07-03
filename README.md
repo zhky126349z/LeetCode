@@ -20,3 +20,4 @@
 2017.7.01 打卡[LeetCode 90. Subsets II], Set<br>
 2017.7.02 打卡[LeetCode 538. Convert BST to Greater Tree], Tree<br>
 2017.7.02 打卡[LeetCode 172. Factorial Trailing Zeroes], Math<br>
+2017.7.03 打卡[LeetCode 69. Sqrt(x)], Binary Search<br>
