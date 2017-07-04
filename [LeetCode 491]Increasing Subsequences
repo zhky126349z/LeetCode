@@ -1,0 +1,118 @@
+Description:
+Given an integer array, your task is to find all the different possible increasing subsequences of the given array, and the length of an increasing subsequence should be at least 2 .
+
+Example:
+Input: [4, 6, 7, 7]
+Output: [[4, 6], [4, 7], [4, 6, 7], [4, 6, 7, 7], [6, 7], [6, 7, 7], [7,7], [4,7,7]]
+Note:
+The length of the given array will not exceed 15.
+The range of integer in the given array is [-100,100].
+The given array may contain duplicates, and two equal integers should also be considered as a special case of increasing sequence.
+
+Solution:
+1.暴力法直接全排序然后判断，巨慢无比。
+2.一种类似dp的思想，每次新访问一个数字时，与set中所有的vector比较，若vector为空或该数大于vector最后一个元素，则复制一个新的vector并向其压入该数字，加入集合。
+有一个问题，就是如果不用set来防止重复的vector。
+前缀树，树形结构好像可以，不过写起来比较麻烦，而且复杂度比较高，每次都要遍历一下树。
+内循环倒叙，维护一个cnt[]和rep[]，[cnt[i], cnt[i+1])表示由nums[i]结尾的答案区间，rep[i]表示当前元素是否和之前的有重复。
+核心思想还是跟上面一样，只是把加入的答案切片记录，在之后遇到重复元素的时候可以把某一区间的序列加上该元素后，直接break。
+
+
+Code:
+//暴力法
+class Solution {
+public:
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+     
+            set<vector<int>> subsets;
+            set<vector<int>> copy;
+            vector<int> initial;
+            vector<vector<int>> ans;
+
+            subsets.insert(initial);
+            copy = subsets;
+
+            for (int num : nums) {
+                for (vector<int> subset : subsets) {
+                    vector<int> newset = subset;
+                    newset.push_back(num);
+                    copy.insert(newset);
+                }
+                subsets = copy;
+            }
+
+            for (vector<int> subset : subsets) {
+                if (subset.size() > 1) {
+                    bool jud = true;
+                    for (int i = 1; i < subset.size(); i ++) {
+                        if (subset[i] < subset[i - 1]) {
+                            jud = false;
+                            break;
+                        }
+                    }
+                    if (jud) ans.push_back(subset);
+                }
+            }
+        return ans;
+    }
+};
+
+//dp思想
+class Solution {
+public:
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        set<vector<int>> subsets = {vector<int>(0)};
+        set<vector<int>> copy = subsets;
+        vector<vector<int>> ans;
+        for (int num : nums) {
+            for (vector<int> subset : subsets) {
+                if (subset.empty() || num >= subset[subset.size() - 1]) {
+                    vector<int> new_sub = subset;
+                    new_sub.push_back(num);
+                    copy.insert(new_sub);
+                }
+            }
+            subsets = copy;
+        }
+        
+        for (vector<int> subset : subsets) {
+            if (subset.size() > 1) {
+                ans.push_back(subset);
+            }
+        }
+
+        return ans;
+    }
+};
+
+//别人的，参考用，不用set
+class Solution {
+public:
+    vector<vector<int>> findSubsequences(vector<int>& nums) {
+        vector<vector<int>> ans(0);
+        if(nums.size()<2) return ans;
+        int fst[nums.size()];       //first
+        bool rep[nums.size()];      //repeat
+        for(int i=0;i<nums.size();++i){
+            fst[i]=ans.size();
+            rep[i]=false;
+            for(int j=i-1;j>=0;--j){
+                if(nums[j]<=nums[i]){
+                    if(!rep[j]){
+                        ans.emplace_back(vector<int>(2,nums[i]));
+                        ans.back()[0]=nums[j];
+                    }
+                    for(int k=fst[j];k<fst[j+1];++k){
+                        ans.push_back(ans[k]);
+                        ans.back().emplace_back(nums[i]);
+                    }
+                    if(nums[j]==nums[i]){
+                        rep[i]=true;
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
