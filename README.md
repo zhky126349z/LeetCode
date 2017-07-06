@@ -23,3 +23,4 @@
 2017.7.03 打卡[LeetCode 69. Sqrt(x)], Binary Search<br>
 2017.7.04 打卡[LeetCode 491. Increasing Subsequences], Sub sequence<br>
 2017.7.06 打卡[LeetCode 617. Merge Two Binary Trees], Tree<br>
+2017.7.06 打卡[LeetCode 202. Happy Number], N/A<br>
