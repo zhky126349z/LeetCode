@@ -1,7 +1,7 @@
 # LeetCode
 记录一下再LeetCode上刷的题，坚持每天刷一道吧
 
-2017.6.12 打卡[LeetCode 2. Add Two Numbers], linked list<br>
+2017.6.12 打卡[LeetCode 2. Add Two Numbers], Linked list<br>
 2017.6.13 打卡[LeetCode 200. Number of Islands], BFS<br>
 2017.6.14 打卡[LeetCode 3. Longest Substring Without Repeating Characters], N/A<br>
 2017.6.15 打卡[LeetCode 407. Trapping Rain Water II], BFS/Priority queue<br>
@@ -24,3 +24,5 @@
 2017.7.04 打卡[LeetCode 491. Increasing Subsequences], Sub sequence<br>
 2017.7.06 打卡[LeetCode 617. Merge Two Binary Trees], Tree<br>
 2017.7.06 打卡[LeetCode 202. Happy Number], N/A<br>
+2017.7.07 打卡[LeetCode 61. Rotate List], Linked list<br>
+
