@@ -28,3 +28,4 @@
 2017.7.09 打卡[LeetCode 94. Binary Tree Inorder Traversal], Tree<br>
 2017.7.09 打卡[LeetCode 467. Unique Substrings in Wraparound String], DP/SubString<br>
 2017.7.10 打卡[LeetCode 507. Perfect Number], N/A<br>
+2017.7.11 打卡[LeetCode 396. Rotate Function], N/A<br>
