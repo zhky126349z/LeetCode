@@ -1,0 +1,59 @@
+Description:
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Examples:
+pattern = "abba", str = "dog cat cat dog" should return true.
+pattern = "abba", str = "dog cat cat fish" should return false.
+pattern = "aaaa", str = "dog cat cat dog" should return false.
+pattern = "abba", str = "dog dog dog dog" should return false.
+Notes:
+You may assume pattern contains only lowercase letters, and str contains lowercase letters separated by a single space.
+
+Solution:
+建了两个map做对应，逐个验证。
+
+Code:
+class Solution {
+public:
+    bool wordPattern(string pattern, string str) {
+        vector<string> cultStr;
+        map<char, string> imap;
+        map<string, char> jmap;
+        string temp = "";
+        for (int i = 0; i < str.length(); i ++) {
+            if (str[i] == ' ') {
+                cultStr.push_back(temp);
+                temp = "";
+            } else {
+                temp += str[i];
+            }
+        }
+        cultStr.push_back(temp);
+        
+        if (cultStr.size() != pattern.length()) {
+            return false;
+        }
+        
+        for (int i = 0; i < cultStr.size(); i ++) {
+            map<char, string>::iterator iiter = imap.find(pattern[i]);
+            if (iiter == imap.end()) {
+                map<string, char>::iterator jiter = jmap.find(cultStr[i]);
+                if (jiter == jmap.end()) {
+                    imap.insert(make_pair(pattern[i], cultStr[i]));
+                    jmap.insert(make_pair(cultStr[i], pattern[i]));
+                } else {
+                    if (jmap[cultStr[i]] != pattern[i]) {
+                        return false;
+                    }
+                }
+            } else {
+                if (imap[pattern[i]].compare(cultStr[i]) != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+};
