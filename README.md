@@ -32,3 +32,4 @@
 2017.7.14 打卡[LeetCode 42. Trapping Rain Water], Priority queue<br>
 2017.7.14 打卡[LeetCode 290. Word Pattern], N/A<br>
 2017.7.18 打卡[LeetCode 482. License Key Formatting], N/A<br>
+2017.7.21 打卡[LeetCode 121. Best Time to Buy and Sell Stock], N/A<br>
