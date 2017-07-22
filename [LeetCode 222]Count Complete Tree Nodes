@@ -1,0 +1,43 @@
+Description:
+Given a complete binary tree, count the number of nodes.
+
+Definition of a complete binary tree from Wikipedia:
+In a complete binary tree every level, except possibly the last, is completely filled, and all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last level h.
+
+Solution:
+一开始想用树形的二分查找，先确定树的层数，然后查最后一层有几个结点。主要是左右二分，直到左边有结点，右边为空。最后一个case超时。
+看了下题解，用递归，左右完全二叉子树。每次分别往最左和最右遍历，如果层数一样则该子树为完全二叉树，可直接返回结点树。否则计算根节点后，以根节点左右节点为root继续。
+
+Code：
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        int leftH = 0;
+        int rightH = 0;
+        TreeNode* left = root;
+        TreeNode* right = root;
+        
+        while(left) {
+            leftH ++;
+            left = left -> left;
+        }
+        
+        while(right) {
+            rightH ++;
+            right = right -> right;
+        }
+        
+        if (leftH == rightH) return pow(2, leftH) - 1;
+        return 1 + countNodes(root -> left) + countNodes(root -> right);
+    }
+        
+};
