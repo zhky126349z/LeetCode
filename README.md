@@ -36,3 +36,4 @@
 2017.7.22 打卡[LeetCode 222. Count Complete Tree Nodes], N/A<br>
 2017.7.23 打卡[LeetCode 6. ZigZag Conversion], N/A<br>
 2017.7.25 打卡[LeetCode 367. Valid Perfect Square], N/A<br>
+2017.7.27 打卡[LeetCode 279. Perfect Squares], DP<br>
