@@ -37,3 +37,4 @@
 2017.7.23 打卡[LeetCode 6. ZigZag Conversion], N/A<br>
 2017.7.25 打卡[LeetCode 367. Valid Perfect Square], N/A<br>
 2017.7.27 打卡[LeetCode 279. Perfect Squares], DP<br>
+2017.7.29 打卡[LeetCode 456. 132 Pattern], N/A/stack<br>
