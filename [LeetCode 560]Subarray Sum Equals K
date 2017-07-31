@@ -1,0 +1,52 @@
+Description:
+Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
+
+Example 1:
+Input:nums = [1,1,1], k = 2
+Output: 2
+Note:
+The length of the array is in range [1, 20,000].
+The range of numbers in the array is [-1000, 1000] and the range of the integer k is [-1e7, 1e7].
+
+Solution:
+朴素方法，遍历nums，每次统计以当前数字结尾的sums，维护一个sums的序列。
+靠，可以算前缀和，当前的前缀和减去前面某一个前缀和就是中间连续序列和。
+因此维护一个map，记录前缀和，然后每次看当前前缀和-k在map里存不存在，存在就说明中间有一段等于k。
+用unordered_map可能会更快一点。
+
+Code:
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        vector<int> sums;
+        int ans = 0;
+        for (int i = 0; i < nums.size(); i ++) {
+            
+            for (int j = 0; j < sums.size(); j ++) {
+                if (sums[j] == k) ans ++;
+                sums[j] += nums[i];
+            }
+            sums.push_back(nums[i]);
+        }
+        for (int j = 0; j < sums.size(); j ++) {
+                if (sums[j] == k) ans ++;
+        }
+        return ans;
+    }
+};
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        int ans = 0;
+        int sum = 0;
+        map<int, int> sums;
+        sums[0] ++;
+        for (int i = 0; i < nums.size(); i ++) {
+            sum += nums[i];
+            ans += sums[sum - k];
+            sums[sum] ++;
+        }
+        return ans;
+    }
+};
