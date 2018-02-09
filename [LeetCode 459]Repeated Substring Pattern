@@ -1,0 +1,47 @@
+Description:
+Given a non-empty string check if it can be constructed by taking a substring of it and appending multiple copies of the substring together. You may assume the given string consists of lowercase English letters only and its length will not exceed 10000.
+
+Example 1:
+Input: "abab"
+Output: True
+Explanation: It's the substring "ab" twice.
+
+Example 2:
+Input: "aba"
+Output: False
+
+Example 3:
+Input: "abcabcabcabc"
+Output: True
+Explanation: It's the substring "abc" four times. (And the substring "abcabc" twice.)
+
+Solution:
+首先分析，如果满足题意，那每片的长度一定是全长的因数，所以大概思路为，从2递增遍历片段数，如果可以整除则进而对字符串进行判断。
+此时知道片段数，片长，以第一片子串为标准，判断之后的几片是否与之相同，一旦有不同则break继续遍历片段数。直到某次所有片段都符合标准。
+
+Code:
+class Solution {
+public:
+    bool repeatedSubstringPattern(string s) {
+        int len = s.length();
+        for (int i = 2; i <= len; i ++) {
+            if (len % i != 0) continue;
+
+            bool flag = true;
+            int lenPerSec = len / i;
+
+            for (int index = 0; index < lenPerSec; index ++) {
+                if (!flag) break;
+                for (int step = lenPerSec; step < len; step += lenPerSec) {
+                    if (s[index + step] != s[index]) {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if (flag) return true;
+
+        }
+        return false;
+    }
+};
