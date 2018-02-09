@@ -38,7 +38,7 @@
 2017.07.25 打卡[LeetCode 367. Valid Perfect Square], N/A<br>
 2017.07.27 打卡[LeetCode 279. Perfect Squares], DP<br>
 2017.07.29 打卡[LeetCode 456. 132 Pattern], N/A/stack<br>
-2017.7.31 打卡[LeetCode 560. Subarray Sum Equals K], N/A/map<br>
+2017.07.31 打卡[LeetCode 560. Subarray Sum Equals K], N/A/map<br>
 
 我特么竟然咸鱼了半年，我日！！！
 
