@@ -1,0 +1,93 @@
+Description:
+You are given two non-empty linked lists representing two non-negative integers. The most significant digit comes first and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+Follow up:
+What if you cannot modify the input lists? In other words, reversing the lists is not allowed.
+
+Example:
+Input: (7 -> 2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 8 -> 0 -> 7
+
+Solution:
+比第一种链表加法多了一个逆序的过程，其他没啥大差别。有几个trick记一下。
+1.最后还有进位记得存上去。
+2.链表新建还是以ListNode* temp = new ListNode(x);这样来新建。
+
+Code:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* l1_r = reverse(l1);
+        ListNode* l2_r = reverse(l2);
+        ListNode* l3 = NULL;
+        ListNode* res = NULL;
+        
+        int sum = 0;
+        int up = 0;
+        
+        
+        while(l1_r || l2_r) {
+            sum = 0;
+            sum += up;
+            if (l1_r) {
+                sum += l1_r->val;
+                l1_r = l1_r->next;
+            }
+            
+            if (l2_r) {
+                sum += l2_r->val;
+                l2_r = l2_r->next;
+            }
+            
+            up = sum / 10;
+            sum = sum - (sum / 10) * 10;
+            
+            
+            ListNode* newNode = new ListNode(sum);
+            
+            if (l3 == NULL) {
+                l3 = newNode;
+                res = l3;
+            } else {
+                l3->next = newNode;
+                l3 = l3->next;
+            }
+            
+        }
+        if (up != 0) {
+            ListNode* newNode = new ListNode(up);
+            l3->next = newNode;
+        }
+        
+        
+        return reverse(res);
+        
+    }
+    
+    ListNode* reverse(ListNode* l) {
+        ListNode* pre = NULL;
+        ListNode* cur = l;
+        ListNode* nex = l->next;
+        
+        while(nex) {
+            cur->next = pre;
+            pre = cur;
+            cur = nex;
+            nex = cur->next;
+        }
+        
+        cur->next = pre;
+        
+        return cur;
+        
+    }
+};
