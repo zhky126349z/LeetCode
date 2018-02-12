@@ -1,0 +1,68 @@
+Description:
+Implement strStr().
+
+Return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+Example 1:
+Input: haystack = "hello", needle = "ll"
+Output: 2
+
+Example 2:
+Input: haystack = "aaaaa", needle = "bba"
+Output: -1
+
+Solution:
+KMP算法。先求模式串的next数组，即每一个字符前面的子串的最长相同前缀和后缀的长度。
+将两个字符串模式匹配时，利用next数组来移动模式串的位置，从而增加效率。
+
+Code:
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int nLen = needle.length();
+        int hLen = haystack.length();
+        if (nLen == 0) {
+            return 0;
+        } else if (hLen == 0) {
+            return -1;
+        }
+        int next[nLen];
+        int k = -1;
+        int j = 0;
+        next[0] = -1;
+        while (j < nLen - 1) {
+            if (k == -1 || needle[k] == needle[j]) {
+                k++;
+                j++;
+                if (needle[j] != needle[k]) {
+                    next[j] = k;   
+                } else {
+                    next[j] = next[k];
+                }
+            } else {
+                k = next[k];
+            }
+        }
+        
+        
+        int i = 0;
+        j = 0;
+        while (i < hLen && j < nLen) {
+            if (j == -1 || haystack[i] == needle[j]) {
+                i ++;
+                j ++;
+            } else {
+                j = next[j];
+            }
+        }
+        
+        if (j == nLen) {
+            return i - j;
+        } else {
+            return -1;
+        }
+        
+        
+        
+    }
+};
