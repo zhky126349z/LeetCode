@@ -1,0 +1,52 @@
+Description:
+Evaluate the value of an arithmetic expression in Reverse Polish Notation.
+
+Valid operators are +, -, *, /. Each operand may be an integer or another expression.
+
+Some examples:
+  ["2", "1", "+", "3", "*"] -> ((2 + 1) * 3) -> 9
+  ["4", "13", "5", "/", "+"] -> (4 + (13 / 5)) -> 6
+  
+Solution:
+算逆序计算式，压栈每次遇到操作符弹栈计算。这也算medium题？？？
+  
+Code:
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        stack<int> st;
+        for (auto token : tokens) {
+            if (token == "+" || token == "-" || token == "*" || token == "/") {
+                int res = 0;
+                int post = st.top();
+                st.pop();
+                int pre = st.top();
+                st.pop();
+                if (token == "+") {
+                    res = pre + post;
+                } else if (token == "-") {
+                    res = pre - post;
+                } else if (token == "*") {
+                    res = pre * post;
+                } else if (token == "/") {
+                    res = pre / post;
+                }
+                st.push(res);
+                
+            } else {
+                int num = 0;
+                int rate = 1;
+                for (int i = token.length() - 1; i >= 0; i --) {
+                    if (token[i] == '-') {
+                        num = -num;
+                    } else {
+                        num += (token[i] - '0') * rate;
+                        rate = rate * 10;
+                    }
+                }
+                st.push(num);
+            }
+        }
+        return st.top();
+    }
+};  
