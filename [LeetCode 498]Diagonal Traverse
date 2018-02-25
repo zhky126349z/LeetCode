@@ -1,0 +1,60 @@
+Description:
+Given a matrix of M x N elements (M rows, N columns), return all elements of the matrix in diagonal order as shown in the below image.
+
+Example:
+Input:
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+Output:  [1,2,4,7,5,3,6,8,9]
+Explanation:
+
+Solution:
+一个数组的输出变换，一开始考虑每一个斜排坐标相加相等，但是在逆向后不好处理。所以最后从坐标变向入手，通过条件判断改变方向和坐标值。
+
+Code:
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        int M = matrix.size();
+        if (M == 0) {
+            return res;
+        }
+        int N = matrix[0].size();
+        bool ord = true;
+        int x = 0, y = 0;
+        for (int i = 0; i < M * N; i ++) {
+            cout << x << y << endl;
+            res.push_back(matrix[x][y]);
+            if (ord) {
+                if (x - 1 >= 0 && y + 1 < N) {
+                    x -= 1;
+                    y += 1;
+                } else {
+                    if (y + 1 < N) {
+                        y += 1;
+                    } else {
+                        x += 1;
+                    }
+                    ord = !ord;
+                }
+            } else {
+                if (x + 1 < M && y - 1 >= 0) {
+                    x += 1;
+                    y -= 1;
+                } else {
+                    if (x + 1 < M) {
+                        x += 1;
+                    } else {
+                        y += 1;
+                    }
+                    ord = !ord;
+                }
+            }
+        }
+        return res;
+    }
+};
