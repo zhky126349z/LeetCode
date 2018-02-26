@@ -1,0 +1,51 @@
+Description:
+Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.
+
+Note that it is the kth smallest element in the sorted order, not the kth distinct element.
+
+Example:
+
+matrix = [
+   [ 1,  5,  9],
+   [10, 11, 13],
+   [12, 13, 15]
+],
+k = 8,
+
+return 13.
+Note: 
+You may assume k is always valid, 1 ≤ k ≤ n2.
+
+Solution:
+O(kn)，维护每行最小的数不断更新。
+以第一行或第一列用优先队列建立一个最小堆，然后每次删顶后增加同列或同行的下一个元素（因为行列都是按序排列的），一共执行k次，总的时间复杂度为O(klog(n))
+二分查找。二分查找可以分为以index二分，或者以值二分。
+
+Code:
+class Solution {
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int n = matrix.size();
+        int ind[n];
+        int cnt = 1;
+        int min = INT_MAX;
+        int min_ind = 0;
+        memset(ind, 0, sizeof(ind));
+        while (cnt <= k) {
+            for (int i = 0; i < n; i ++) {
+                if (ind[i] < n && matrix[i][ind[i]] < min) {
+                    min = matrix[i][ind[i]];
+                    min_ind = i;
+                }
+            }
+            if (cnt == k) {
+                return matrix[min_ind][ind[min_ind]];
+            }
+            ind[min_ind] ++;
+            min = INT_MAX;
+            cnt ++;
+            
+        }
+        return 0;
+    }
+};
