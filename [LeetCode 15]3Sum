@@ -18,7 +18,6 @@ Code:
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
-        set<vector<int>> res;
         vector<vector<int>> fin;
         if (nums.size() < 3) {
             return fin;
@@ -26,17 +25,14 @@ public:
         sort(nums.begin(), nums.end());
         for (int i = 0; i < nums.size() - 1; i ++) {
             int target = -1 * nums[i];
-            int left = 0, right = nums.size() - 1;
+            int left = i + 1, right = nums.size() - 1;
             while(left < right) {
-                if (left != i && right != i && nums[left] + nums[right] == target) {
+                if (nums[left] + nums[right] == target) {
                     vector<int> tmp{nums[i], nums[left], nums[right]};
-                    sort(tmp.begin(), tmp.end());
-                    res.insert(tmp);
+                    fin.push_back(tmp);
+                    while (left  < right && nums[left] == nums[left + 1]) left ++;
+                    while (left  < right && nums[right] == nums[right - 1]) right --;
                     left ++;
-                    right --;
-                }else if (left == i) {
-                    left ++;
-                }else if (right == i) {
                     right --;
                 }else if (nums[left] + nums[right] > target) {
                     right --;
@@ -44,9 +40,7 @@ public:
                     left ++;
                 }
             }
-        }
-        for (auto s : res) {
-            fin.push_back(s);
+            while (i + 1 < nums.size() && nums[i + 1] == nums[i]) i ++;
         }
         return fin;
     }
