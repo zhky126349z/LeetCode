@@ -53,3 +53,4 @@
 2018.02.25 打卡[LeetCode 498. Diagonal Traverse], Array<br>
 2018.02.25 打卡[LeetCode 37. Sudoku Solver], DFS<br>
 2018.02.26 打卡[LeetCode 283. Move Zeroes], Array<br>
+2018.02.26 打卡[LeetCode 434. Number of Segments in a String], String<br>
