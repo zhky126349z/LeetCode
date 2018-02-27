@@ -1,0 +1,42 @@
+Description:
+Given two integers n and k, return all possible combinations of k numbers out of 1 ... n.
+
+For example,
+If n = 4 and k = 2, a solution is:
+
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+
+Solution:
+1.利用C(n,k)=C(n-1,k-1)+C(n-1,k)实现一个递归调用从而得到最后的集合。
+2.利用其特性，一位一位统计可能，因为不存在冗余所以每个数字均不一样，从(0,0)-(1,1)-(1,2)-(1,3)-(1,4)-(1,5)-(2,5)-(2,2)-(2,3)-(2,4)-(2,5)-(3,5)以此类推
+
+Code:
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> comb;
+        vector<vector<int>> subcomb;
+        if (k == 0 || n == k) {
+            vector<int> vec;
+            for (int i = 1; i <= k; i ++) {
+                vec.push_back(i);
+            }
+            comb.push_back(vec);
+            return comb;
+        }
+        comb = combine(n - 1, k - 1);
+        for (auto &c : comb) {
+            c.push_back(n);
+        }
+        subcomb = combine(n - 1, k);
+        comb.insert(comb.end(), subcomb.begin(), subcomb.end());
+        return comb;
+    }
+};
