@@ -59,3 +59,5 @@
 2018.02.26 打卡[LeetCode 20. Valid Parentheses], Stack<br>
 2018.02.26 打卡[LeetCode 378. Kth Smallest Element in a Sorted Matrix], Array/Binary Search/Min Heap<br>
 2018.02.27 打卡[LeetCode 230. Kth Smallest Element in a BST], BST/Stack<br>
+2018.02.27 打卡[LeetCode 77. Combinations], Recursive<br>
+2018.02.27 打卡[LeetCode 561. Array Partition I], N/A<br>
