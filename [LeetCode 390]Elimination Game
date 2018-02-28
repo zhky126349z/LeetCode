@@ -42,3 +42,20 @@ public:
         return head;
     }
 };
+
+class Solution {
+public:
+    int lastRemaining(int n) {
+        return left(n);
+    }
+private:
+    int left(int n) {
+        if (n <= 2) return n;
+        return 2 * right(n / 2);
+    }
+    
+    int right(int n) {
+        if (n <= 2) return 1;
+        return 2 * left(n / 2) + n % 2 - 1;
+    }
+};
