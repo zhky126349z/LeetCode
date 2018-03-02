@@ -1,0 +1,74 @@
+Description:
+Clone an undirected graph. Each node in the graph contains a label and a list of its neighbors.
+
+
+OJ's undirected graph serialization:
+Nodes are labeled uniquely.
+
+We use # as a separator for each node, and , as a separator for node label and each neighbor of the node.
+As an example, consider the serialized graph {0,1,2#1,2#2,2}.
+
+The graph has a total of three nodes, and therefore contains three parts as separated by #.
+
+First node is labeled as 0. Connect node 0 to both nodes 1 and 2.
+Second node is labeled as 1. Connect node 1 to node 2.
+Third node is labeled as 2. Connect node 2 to node 2 (itself), thus forming a self-cycle.
+Visually, the graph looks like the following:
+
+       1
+      / \
+     /   \
+    0 --- 2
+         / \
+         \_/
+       
+Solution:
+要求克隆一个图，图有自环。DFS一遍，用hashMap记录一下label对应的node指针，然后每次把一个结点完全克隆，如果map里找不到他的邻居结点就在map里添加对应的结点，然后再加到原始结点的邻接vector里
+
+Code:
+/**
+ * Definition for undirected graph.
+ * struct UndirectedGraphNode {
+ *     int label;
+ *     vector<UndirectedGraphNode *> neighbors;
+ *     UndirectedGraphNode(int x) : label(x) {};
+ * };
+ */
+class Solution {
+public:
+    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+        
+        if (node == NULL) {
+            return NULL;
+        }
+        
+        map<int, UndirectedGraphNode *> nodeMap;
+        map<int, bool> visit;
+        queue<UndirectedGraphNode *> q;
+        q.push(node);
+        UndirectedGraphNode * head = new UndirectedGraphNode(node->label);
+        nodeMap[node->label] = head;
+        visit[node->label] = true;
+        
+        while(!q.empty()) {
+            UndirectedGraphNode * tmp = q.front();
+            q.pop();
+            
+            for (auto nei : tmp->neighbors) {
+                if (visit.find(nei->label) == visit.end()) {
+                    q.push(nei);
+                    visit[nei->label] = true;
+                }
+                if (nodeMap.find(nei->label) == nodeMap.end()) {
+                    UndirectedGraphNode * newNode = new UndirectedGraphNode(nei->label);
+                    nodeMap[nei->label] = newNode;
+                }
+                nodeMap[tmp->label]->neighbors.push_back(nodeMap[nei->label]);
+                
+            }
+        }
+        
+        return head;
+        
+    }
+};
