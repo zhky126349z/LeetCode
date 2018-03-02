@@ -1,0 +1,38 @@
+Description:
+Given an array consists of non-negative integers, your task is to count the number of triplets chosen from the array that can make triangles if we take them as side lengths of a triangle.
+Example 1:
+Input: [2,2,3,4]
+Output: 3
+Explanation:
+Valid combinations are: 
+2,3,4 (using the first 2)
+2,3,4 (using the second 2)
+2,2,3
+
+Solution:
+O(n^2)，先确定两个较小值，更新较大值的下标，累加结果。
+
+Code:
+class Solution {
+public:
+    int triangleNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int res = 0;
+        if (nums.size() < 3) return res;
+        
+        for (int i = 0; i < nums.size() - 2; i ++) {
+            int second = i + 1;
+            int third = second + 1;
+            int sum = 0;
+            
+            while (second < nums.size() - 1) {
+                sum = nums[i] + nums[second];
+                while (third <= second || (third < nums.size() && nums[third] < sum)) third ++;
+                res += third - second - 1;
+                second ++;
+            }
+            
+        }
+        return res;
+    }
+};
