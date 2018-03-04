@@ -1,0 +1,20 @@
+Description:
+Given an integer, write a function to determine if it is a power of three.
+
+Follow up:
+Could you do it without using any loop / recursion?
+
+Solution:
+求一个数是不是3的x次方，循环除以3直到不能除，判断是否1。
+非循环，用3^19%n==0来判断
+
+Code:
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        if (n > 1) {
+            while (n % 3 == 0) n = n / 3;
+        }
+        return n == 1;
+    }
+};
