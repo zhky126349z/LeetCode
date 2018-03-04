@@ -72,3 +72,4 @@
 2018.03.02 打卡[LeetCode 133. Clone Graph], DFS/BFS<br>
 2018.03.02 打卡[LeetCode 611. Valid Triangle Number], N/A<br>
 2018.03.03 打卡[LeetCode 5. Longest Palindromic Substring], String<br>
+2018.03.04 打卡[LeetCode 543. Diameter of Binary Tree], Tree/Recursive<br>
