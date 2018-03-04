@@ -1,0 +1,79 @@
+Description:
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+Example:
+
+Input: "babad"
+
+Output: "bab"
+
+Note: "aba" is also a valid answer.
+ 
+
+Example:
+
+Input: "cbbd"
+
+Output: "bb"
+
+Solution:
+求最长的回文子串。这里用了马拉车算法，把时间复杂度降到了O(n)，具体为。
+先补充字符串在每一个字符的前后都添加上一个原字符串中不存在的字符，用来统一处理奇偶的情况。如“#b#a#b#a#d”
+maxRight记录当前已知的回文串的最右边界。
+pos记录与maxRight对应的回文中心。
+这里维护一个P[i]记录的是位置i最长的回文串半径（计算本身）。所以问题转化为如何快速求得P[i]。
+遍历每个字符，其位置为i，这里分两个情况：
+1. i<maxRight。则肯定有i关于pos对称的位置j，p[i]>=p[j]，因为p[i]还可能扩展，但是p[i]往右暂时最多只能扩展到maxRight。所以p[i]=min(p[2*pos-i], maxRight-i)
+2. i>maxRight。先将p[i]置为1，反正之后总要往外再尝试扩展的。
+然后在i位置尝试扩展，并且更新pos和maxRight。
+最后得到的max(pos[i])-1记为原串回文子串最长长度。
+
+Code:
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int maxRight = 0;
+        int pos = 0;
+        int res = 0;
+        int maxLen = 0;
+        string str = "";
+        string resStr = "";
+        
+        // fill the String
+        for (int i = 0; i < s.length(); i ++) {
+            str = str + '&' + s[i];
+        }
+        str = str + '&';
+        vector<int> p(str.length(), 0);
+        
+        // calculate Pi
+        for (int i = 0; i < str.length(); i ++) {
+            // i and maxRight
+            if (i < maxRight) {
+                p[i] = min(maxRight - i, p[2*pos - i]);
+            } else {
+                p[i] = 1;
+            }
+            
+            // extend p[i]
+            while(i - p[i] >= 0 && i + p[i] < str.length() && str[i - p[i]] == str[i + p[i]]) {
+                p[i] ++;
+            }
+            
+            // update maxRight and pos
+            if (i + p[i] - 1> maxRight) {
+                pos = i;
+                maxRight = i + p[i] - 1;
+            }
+            
+            // record the largest p[i]
+            if (p[i] > maxLen) {
+                maxLen = p[i];
+                res = i;
+            }
+        }
+        
+        return s.substr((res - maxLen + 1)/2, maxLen - 1);
+        
+    }
+};
