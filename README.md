@@ -74,3 +74,4 @@
 2018.03.03 打卡[LeetCode 5. Longest Palindromic Substring], String<br>
 2018.03.04 打卡[LeetCode 543. Diameter of Binary Tree], Tree/Recursive<br>
 2018.03.04 打卡[LeetCode 326. Power of Three], N/A<br>
+2018.03.05 打卡[LeetCode 718. Maximum Length of Repeated Subarray], DP<br>
