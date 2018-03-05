@@ -1,0 +1,46 @@
+Description:
+S and T are strings composed of lowercase letters. In S, no letter occurs more than once.
+
+S was sorted in some custom order previously. We want to permute the characters of T so that they match the order that S was sorted. More specifically, if x occurs before y in S, then x should occur before y in the returned string.
+
+Return any permutation of T (as a string) that satisfies this property.
+
+Example :
+Input: 
+S = "cba"
+T = "abcd"
+Output: "cbad"
+Explanation: 
+"a", "b", "c" appear in S, so the order of "a", "b", "c" should be "c", "b", and "a". 
+Since "d" does not appear in S, it can be at any position in T. "dcba", "cdba", "cbda" are also valid outputs.
+
+Solution:
+利用桶排序的思想，先创建26个桶，然后得到S中存在的字符满足的桶，然后把T中字符放入这些满足条件的桶，不满足的直接加到res上去。
+最后按照S的顺序把桶里的字符输出到res上。
+
+Code:
+class Solution {
+public:
+    string customSortString(string S, string T) {
+        string res = "";
+        int bucket[26];
+        memset(bucket, -1, sizeof(bucket));
+        for (int i = 0; i < S.length(); i ++) {
+            bucket[S[i] - 'a'] ++;
+        }
+        for (int i = 0; i < T.length(); i ++) {
+            if (bucket[T[i] - 'a'] != -1) {
+                bucket[T[i] - 'a'] ++;
+            } else {
+                res = res + T[i];
+            }
+        }
+        for (int i = 0; i < S.length(); i ++) {
+            while(bucket[S[i] - 'a'] > 0) {
+                res = res + S[i];
+                bucket[S[i] - 'a'] --;
+            }
+        }
+        return res;
+    }
+};
