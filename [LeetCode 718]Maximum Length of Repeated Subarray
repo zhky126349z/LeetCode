@@ -13,7 +13,7 @@ Note:
 0 <= A[i], B[i] < 100
 
 Solution:
-DP。dp[i][j]表示以A[i]和B[j]结尾的最长公共子串。
+DP。dp[i][j]表示子串在A[i-1]和在B[j-1]结尾，其最长公共长度。
 if(A[i-1] == B[j-1]) dp[i][j] = d[i-1][j-1] + 1
 
 Code:
