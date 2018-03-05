@@ -75,3 +75,4 @@
 2018.03.04 打卡[LeetCode 543. Diameter of Binary Tree], Tree/Recursive<br>
 2018.03.04 打卡[LeetCode 326. Power of Three], N/A<br>
 2018.03.05 打卡[LeetCode 718. Maximum Length of Repeated Subarray], DP<br>
+2018.03.05 打卡[LeetCode 481. Magical String], Array<br>
