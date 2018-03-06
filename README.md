@@ -78,3 +78,4 @@
 2018.03.05 打卡[LeetCode 481. Magical String], Array<br>
 2018.03.05 打卡[LeetCode 662. Maximum Width of Binary Tree], Tree/BFS<br>
 2018.03.05 打卡[LeetCode 791. Custom Sort String], BucketSort<br>
+2018.03.06 打卡[LeetCode 399. Evaluate Division], Graph<br>
