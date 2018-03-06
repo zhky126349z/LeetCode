@@ -1,0 +1,86 @@
+Description:
+Equations are given in the format A / B = k, where A and B are variables represented as strings, and k is a real number (floating point number). Given some queries, return the answers. If the answer does not exist, return -1.0.
+
+Example:
+Given a / b = 2.0, b / c = 3.0. 
+queries are: a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ? . 
+return [6.0, 0.5, -1.0, 1.0, -1.0 ].
+
+The input is: vector<pair<string, string>> equations, vector<double>& values, vector<pair<string, string>> queries , where equations.size() == values.size(), and the values are positive. This represents the equations. Return vector<double>.
+
+According to the example above:
+
+equations = [ ["a", "b"], ["b", "c"] ],
+values = [2.0, 3.0],
+queries = [ ["a", "c"], ["b", "a"], ["a", "e"], ["a", "a"], ["x", "x"] ]. 
+
+Solution:
+图论题。先根据输入建出一个有向图的邻接矩阵。然后用佛洛依德算法计算所有结点之间的距离，这里因为情况特殊，不需要计算最短，因为必然为定值，可以减少复杂度。
+最后根据询问尝试在邻接矩阵中寻找值，找不到或为0则输出-1。
+
+Code:
+class Solution {
+public:
+    vector<double> calcEquation(vector<pair<string, string>> equations, vector<double>& values, vector<pair<string, string>> queries) {
+        map<string, int> nodesMap;
+        int cnt = 0;
+        vector<double> res;
+        
+        // construct the string - int node map
+        for (auto equation : equations) {
+            string fir = equation.first;
+            string sec = equation.second;
+            if (nodesMap.find(fir) == nodesMap.end()) {
+                nodesMap[fir] = cnt ++;
+            }
+            if (nodesMap.find(sec) == nodesMap.end()) {
+                nodesMap[sec] = cnt ++;
+            }
+        }
+        
+        // put the value
+        double val[cnt][cnt];
+        memset(val, 0, sizeof(val));
+        for (int i = 0; i < values.size(); i ++) {
+            auto equation = equations[i];
+            val[nodesMap[equation.first]][nodesMap[equation.second]] = values[i];
+            val[nodesMap[equation.second]][nodesMap[equation.first]] = 1 / values[i];
+        }
+        
+        // calculate any two nodes' distance
+        for (int i = 0; i < cnt; i ++) {
+            for (int j = 0; j < cnt; j ++) {
+                for (int k = 0; k < cnt; k ++) {
+                    
+                    if (val[i][j] != 0) {
+                        break;
+                    }else if (i == j) {
+                        val[i][j] = 1.0;
+                        break;
+                    }else if (val[i][j] == 0 && val[i][k] != 0 && val[k][j] != 0) {
+                        val[i][j] = val[i][k] * val[k][j];
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // calculate queries
+        for (auto query : queries) {
+            string fir = query.first;
+            string sec = query.second;
+            if (nodesMap.find(fir) != nodesMap.end() && nodesMap.find(sec) != nodesMap.end()) {
+                if (val[nodesMap[fir]][nodesMap[sec]] == 0) {
+                    res.push_back(-1.0);
+                } else {
+                    res.push_back(val[nodesMap[fir]][nodesMap[sec]]);
+                }
+            } else {
+                res.push_back(-1.0);
+            }
+        }
+        
+        return res;
+        
+    }
+};
