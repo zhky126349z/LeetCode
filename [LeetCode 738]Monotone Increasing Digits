@@ -1,0 +1,57 @@
+Description:
+Given a non-negative integer N, find the largest number that is less than or equal to N with monotone increasing digits.
+
+(Recall that an integer has monotone increasing digits if and only if each pair of adjacent digits x and y satisfy x <= y.)
+
+Example 1:
+Input: N = 10
+Output: 9
+Example 2:
+Input: N = 1234
+Output: 1234
+Example 3:
+Input: N = 332
+Output: 299
+Note: N is an integer in the range [0, 10^9].
+
+Solution:
+一位一位来算，如果某位减少了1，则他之后可以全为9，然后往前看满不满足，不满足继续减，直到所有满足为止。
+
+Code:
+class Solution {
+public:
+    int monotoneIncreasingDigits(int N) {
+        if (N == 0) return 0;
+        vector<int> nums;
+        int num = N;
+        int res = 0;
+        while(num > 0) {
+            nums.push_back(num % 10);
+            num = num / 10;
+        }
+        
+        int i = nums.size() - 1;
+        int nine = -1;
+        while (i > 0 && i > nine && i < nums.size()) {
+            if (nums[i] <= nums[i - 1]) {
+                i --;
+            } else {
+                nums[i] --;
+                nine = i;
+                i ++;
+            }
+        }
+        
+        int cnt = 1;
+        for (int j = 0; j < nums.size(); j ++) {
+            if (j < nine) {
+                res += 9 * cnt;
+            } else {
+                res += nums[j] * cnt;
+            }
+            cnt = cnt * 10;
+        }
+        
+        return res;
+    }
+};
