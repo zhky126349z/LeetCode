@@ -1,0 +1,45 @@
+Description:
+Given a string and a string dictionary, find the longest string in the dictionary that can be formed by deleting some characters of the given string. If there are more than one possible results, return the longest word with the smallest lexicographical order. If there is no possible result, return the empty string.
+
+Example 1:
+Input:
+s = "abpcplea", d = ["ale","apple","monkey","plea"]
+
+Output: 
+"apple"
+Example 2:
+Input:
+s = "abpcplea", d = ["a","b","c"]
+
+Output: 
+"a"
+Note:
+All the strings in the input will only contain lower-case letters.
+The size of the dictionary won't exceed 1,000.
+The length of all the strings in the input won't exceed 1,000.
+
+Solution:
+一开始想着是不是把dictionary所有字符的位置记下来，然后每次查询str时，去维护一个能在字典中找到的位置，可以更快一点。
+然后发现其实朴素方法就可以，遍历str，然后与dictionary比对就可以了。
+
+Code:
+class Solution {
+public:
+    string findLongestWord(string s, vector<string>& d) {
+        string res = "";
+        for (auto str : d) {
+            int strid = 0, sid = 0;
+            while(sid < s.length() && strid < str.length()) {
+                while(sid < s.length() && s[sid] != str[strid]) sid ++;
+                if (sid != s.size()) {
+                    strid ++;
+                    sid ++;
+                }
+            }
+            if (strid == str.size()) {
+                if (str.length() > res.length() || (str.length() == res.length() && str < res)) res = str;
+            }
+        }
+        return res;
+    }
+};
