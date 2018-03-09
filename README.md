@@ -81,3 +81,4 @@
 2018.03.06 打卡[LeetCode 399. Evaluate Division], Graph<br>
 2018.03.07 打卡[LeetCode 486. Predict the Winner], DP/MemorySearch<br>
 2018.03.07 打卡[LeetCode 738. Monotone Increasing Digits], Array<br>
+2018.03.09 打卡[LeetCode 524. Longest Word in Dictionary through Deleting], String<br>
