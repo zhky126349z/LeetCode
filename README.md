@@ -90,3 +90,4 @@
 2018.03.10 打卡[LeetCode 152. Maximum Product Subarray], N/A/DP<br>
 2018.03.10 打卡[LeetCode 58. Length of Last Word], N/A<br>
 2018.03.11 打卡[LeetCode 102. Binary Tree Level Order Traversal], BFS<br>
+2018.03.11 打卡[LeetCode 258. Add Digits], DigitalRoot<br>
