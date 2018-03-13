@@ -93,3 +93,4 @@
 2018.03.11 打卡[LeetCode 258. Add Digits], DigitalRoot<br>
 2018.03.12 打卡[LeetCode 472. Concatenated Words], DP<br>
 2018.03.13 打卡[LeetCode 375. Guess Number Higher or Lower II], DP<br>
+2018.03.13 打卡[LeetCode 141. Linked List Cycle], LinkedList<br>
