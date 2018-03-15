@@ -95,3 +95,6 @@
 2018.03.13 打卡[LeetCode 375. Guess Number Higher or Lower II], DP<br>
 2018.03.13 打卡[LeetCode 141. Linked List Cycle], LinkedList<br>
 2018.03.15 打卡[LeetCode 687. Longest Univalue Path], DFS<br>
+2018.03.15 打卡[LeetCode 127. Word Ladder], BFS<br>
+2018.03.15 打卡[LeetCode 108. Convert Sorted Array to Binary Search Tree], BinarySearch<br>
+2018.03.15 打卡[LeetCode 724. Find Pivot Index], N/A<br>
