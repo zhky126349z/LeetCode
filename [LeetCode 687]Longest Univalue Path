@@ -1,0 +1,62 @@
+Description:
+Given a binary tree, find the length of the longest path where each node in the path has the same value. This path may or may not pass through the root.
+
+Note: The length of path between two nodes is represented by the number of edges between them.
+
+Example 1:
+
+Input:
+
+              5
+             / \
+            4   5
+           / \   \
+          1   1   5
+Output:
+
+2
+Example 2:
+
+Input:
+
+              1
+             / \
+            4   5
+           / \   \
+          4   4   5
+Output:
+
+2
+
+Solution:
+DFS，先一路访问到最底层，然后慢慢回溯，回溯的时候就以每个结点为中心，先计算左右两路最长的可能存在的路径之和为多少，然后取max，往上回溯的时候返回的参数
+则是左右两边较长的那条路径
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int longestUnivaluePath(TreeNode* root) {
+        int res = 0;
+        if (root) dfs(res, root);
+        return res;
+    }
+    
+    int dfs(int& res, TreeNode* node) {
+        int left = node->left ? dfs(res, node->left) : 0;
+        int right = node->right ? dfs(res, node->right) : 0;
+        int leftRes = (node->left && node->left->val == node->val) ? left + 1 : 0;
+        int rightRes = (node->right && node->right->val == node->val) ? right + 1 : 0;
+        res = max(res, leftRes + rightRes);
+        return max(leftRes, rightRes);
+    }
+    
+};
