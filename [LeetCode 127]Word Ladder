@@ -1,0 +1,81 @@
+Description:
+Given two words (beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence from beginWord to endWord, such that:
+
+Only one letter can be changed at a time.
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+
+Note:
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+UPDATE (2017/1/20):
+The wordList parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
+
+Solution:
+BFS。一开始的直觉是图论，两个能转移的单词之间的距离为一则两个结点连通，然后求dijstra求开始点和结束点之前的最短路。
+出现问题，邻接矩阵存不下。
+发现可以BFS，一层一层访问能够转换到的单词，访问过的就可以设为已访问，以上一层转换到的单词去尝试能否转换到剩下未访问的单词。
+复杂度有点高，假设最后有len层，n^len复杂度。
+这时双向BFS站了出来，可以从结束点和开始点同时BFS，复杂度变为了n^(len/2) * 2。大大降低了时间复杂度。
+但是要记得双向BFS的时候，必须把同一层都遍历完，不然可能无法得到最优解。
+
+Code:
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        int wordLen = beginWord.length();
+        int len = wordList.size();
+        bool vis[len];
+        int dis[len];
+        memset(vis, false, sizeof(vis));
+        memset(dis, 0, sizeof(dis));
+        queue<int> q;
+        int endIndex = INT_MAX;
+        for (int i = 0; i < len; i ++) {
+            if (canTrans(beginWord, wordList[i], wordLen) <= 1) {
+                q.push(i);
+                dis[i] = 1;
+                vis[i] = true;
+            }
+            if (canTrans(endWord, wordList[i], wordLen) == 0) endIndex = i;
+        }
+        
+        if (endIndex == INT_MAX) return 0;
+        if (vis[endIndex]) return dis[endIndex] + 1;
+        
+        while(!q.empty()) {
+            int j = q.front();
+            q.pop();
+            
+            for (int i = 0; i < len; i ++) {
+                if (!vis[i] && canTrans(wordList[j], wordList[i], wordLen) <= 1) {
+                    dis[i] = dis[j] + 1;
+                    vis[i] = true;
+                    q.push(i);
+                    if (i == endIndex) return dis[i] + 1;
+                }
+            }
+            
+        }
+        return 0;
+    }
+    
+    int canTrans(string a, string b, int len) {
+        int cnt = 0;
+        for (int i = 0; i < len; i ++) {
+            if (a[i] != b[i]) cnt ++;
+         }
+        return cnt;
+    }
+    
+};
