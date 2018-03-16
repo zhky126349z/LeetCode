@@ -1,0 +1,46 @@
+Description:
+Given a sorted linked list, delete all nodes that have duplicate numbers, leaving only distinct numbers from the original list.
+
+For example,
+Given 1->2->3->3->4->4->5, return 1->2->5.
+Given 1->1->1->2->3, return 2->3.
+
+Solution:
+链表删除操作，要求只要是冗余的所有都删除。在链表的头前面加一个pre指针，作为最后结果应该有的末尾指针。
+维护一个cur指针往后遍历，如果没发现有重复的元素则把pre指针移到cur指针处，
+如果发现重复元素则把pre的next指向最后一个非重复的元素，pre本身不变，cur指针往后一位继续遍历
+
+Code:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (head == NULL || head->next == NULL) return head;
+        ListNode* root = new ListNode(head->val - 1);
+        root->next = head;
+        ListNode* pre = root;
+        ListNode* cur = root->next;
+        while(pre && cur) {
+            int cnt = 0;
+            while(cur != NULL && cur->next != NULL && cur->next->val == cur->val) {
+                cur = cur->next;
+                cnt ++;
+            }
+            if (cnt == 0) {
+                pre = cur;
+                cur = cur->next;
+            } else {
+                pre->next = cur->next;
+                cur = cur->next;
+            }
+        }
+        return root->next;
+    }
+};
