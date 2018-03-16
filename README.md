@@ -98,3 +98,4 @@
 2018.03.15 打卡[LeetCode 127. Word Ladder], BFS<br>
 2018.03.15 打卡[LeetCode 108. Convert Sorted Array to Binary Search Tree], BinarySearch<br>
 2018.03.15 打卡[LeetCode 724. Find Pivot Index], N/A<br>
+2018.03.16 打卡[LeetCode 82. Remove Duplicates from Sorted List II], LinkedList<br>
