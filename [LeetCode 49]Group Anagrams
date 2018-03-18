@@ -1,0 +1,35 @@
+Description:
+Given an array of strings, group anagrams together.
+
+For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"], 
+Return:
+
+[
+  ["ate", "eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+Note: All inputs will be in lower-case.
+
+Solution:
+一开始我想的是把字符串的所有占有的字符存到一个字符串里或者数组，以这个作为索引存到hashmap里，但是发现办不到。
+然后发现可以把字符排序，排序后的字符如果有相同的字符肯定都一样，然后存到hashmap里
+
+Code:
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> map;
+        vector<vector<string>> res;
+        int i = 0;
+        for (auto str : strs) {
+            sort(str.begin(), str.end());
+            map[str].push_back(strs[i ++]);
+        }
+        
+        for (auto m : map) {
+            res.push_back(m.second);
+        }
+        return res;
+    }
+};
