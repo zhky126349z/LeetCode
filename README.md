@@ -86,13 +86,13 @@
 2018.03.09 打卡[LeetCode 504. Base 7], N/A<br>
 2018.03.09 打卡[LeetCode 661. Image Smoother], N/A<br>
 2018.03.09 打卡[LeetCode 26. Remove Duplicates from Sorted Array], N/A<br>
-2018.03.09 打卡[LeetCode 740. Delete and Earn], Minimax<br>
+2018.03.09 打卡[LeetCode 740. Delete and Earn], DP<br>
 2018.03.10 打卡[LeetCode 152. Maximum Product Subarray], N/A/DP<br>
 2018.03.10 打卡[LeetCode 58. Length of Last Word], N/A<br>
 2018.03.11 打卡[LeetCode 102. Binary Tree Level Order Traversal], BFS<br>
 2018.03.11 打卡[LeetCode 258. Add Digits], DigitalRoot<br>
 2018.03.12 打卡[LeetCode 472. Concatenated Words], DP<br>
-2018.03.13 打卡[LeetCode 375. Guess Number Higher or Lower II], DP<br>
+2018.03.13 打卡[LeetCode 375. Guess Number Higher or Lower II], Minimax<br>
 2018.03.13 打卡[LeetCode 141. Linked List Cycle], LinkedList<br>
 2018.03.15 打卡[LeetCode 687. Longest Univalue Path], DFS<br>
 2018.03.15 打卡[LeetCode 127. Word Ladder], BFS<br>
