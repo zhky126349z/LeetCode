@@ -1,0 +1,20 @@
+Description:
+Given an array of integers, every element appears twice except for one. Find that single one.
+
+Note:
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+
+Solution:
+亦或
+
+Code:
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for (auto num : nums) {
+            res = res ^ num;
+        }
+        return res;
+    }
+};
