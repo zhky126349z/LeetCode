@@ -104,3 +104,4 @@
 2018.03.17 打卡[LeetCode 454. 4Sum II], HashMap<br>
 2018.03.18 打卡[LeetCode 49. Group Anagrams], HashMap<br>
 2018.03.19 打卡[LeetCode 464. Can I Win], Minimax<br>
+2018.03.19 打卡[LeetCode 274. H-Index], Array<br>
