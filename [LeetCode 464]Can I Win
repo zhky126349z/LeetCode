@@ -1,0 +1,86 @@
+Description:
+In the "100 game," two players take turns adding, to a running total, any integer from 1..10. The player who first causes the running total to reach or exceed 100 wins.
+
+What if we change the game so that players cannot re-use integers?
+
+For example, two players might take turns drawing from a common pool of numbers of 1..15 without replacement until they reach a total >= 100.
+
+Given an integer maxChoosableInteger and another integer desiredTotal, determine if the first player to move can force a win, assuming both players play optimally.
+
+You can always assume that maxChoosableInteger will not be larger than 20 and desiredTotal will not be larger than 300.
+
+Example
+
+Input:
+maxChoosableInteger = 10
+desiredTotal = 11
+
+Output:
+false
+
+Explanation:
+No matter which integer the first player choose, the first player will lose.
+The first player can choose an integer from 1 up to 10.
+If the first player choose 1, the second player can only choose integers from 2 up to 10.
+The second player will win by choosing 10 and get a total = 11, which is >= desiredTotal.
+Same with other integers chosen by the first player, the second player will always win.
+
+Solution:
+首先，这是一个完全信息游戏，可以使用极大极小算法（适用于零和游戏和完全信息游戏）
+主要思路是在你的回合，使自己的收益最大，在对手的回合使自己的收益最小（对手会让自己的收益最大）
+实现方法还是记忆化搜索（DFS），遍历所有的局面，判断是否可以在某一种情况下必胜必胜必胜。
+为什么可以实现是在这种情况下必胜呢，因为在自己的回合，会持续去寻找能让自己胜利的方案，
+在递归的情况下，如果下一层返回的是true（对手的false）的话代表着对手不管怎么样走都是无法胜利的，如果队友有方案能够胜利那返回的一定是false（对手的true）
+另外，对于游戏状态的记录，游戏当前的状态完全取决于目前剩下多少数字能选择，所以可以用一个string来记录所有的数字是否已经被选择，然后把已经判断的局面存到hashmap里
+因为2134的取法和1243的取法能否胜利是一样的，所以顺序并不重要。
+重点：DFS！记忆化！极大极小算法的意思是！在自己的回合让自己的收益最大化！在对方的回合让自己的收益最小化！
+
+
+
+Code:
+class Solution {
+
+public:
+    unordered_map<string, bool> map;
+    string used;
+
+public:
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        if (((maxChoosableInteger + 1) * maxChoosableInteger / 2) < desiredTotal) return false;
+        if (maxChoosableInteger > desiredTotal) return true;
+        if (maxChoosableInteger + 1 == desiredTotal) return false;
+
+        // initial the used number
+        for (int i = 0; i < maxChoosableInteger; i ++) {
+            used = used + '0';
+        }
+
+        return memoryDFS(desiredTotal);
+    }
+
+    // Can first one go into this situation win
+    bool memoryDFS(int desiredTotal) {
+        // lose obviously
+        if (desiredTotal <= 0) return false;
+
+        // if this situation has happened before return that
+        if (map.find(used) != map.end()) {
+            return map[used];
+        }
+
+        // dfs + memory
+        for (int i = 0; i < used.length(); i ++) {
+            if (used[i] == '1') continue;
+            used[i] = '1';
+            if (!memoryDFS(desiredTotal - i - 1)) {
+                used[i] = '0';
+                map.insert({used, true});
+                return true;
+            }
+            used[i] = '0';
+        }
+
+        map.insert({used, false});
+        return false;
+    }
+};
