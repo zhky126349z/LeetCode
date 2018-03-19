@@ -1,0 +1,43 @@
+Description:
+Given an array of citations (each citation is a non-negative integer) of a researcher, write a function to compute the researcher's h-index.
+
+According to the definition of h-index on Wikipedia: "A scientist has index h if h of his/her N papers have at least h citations each, and the other N − h papers have no more than h citations each."
+
+For example, given citations = [3, 0, 6, 1, 5], which means the researcher has 5 papers in total and each of them had received 3, 0, 6, 1, 5 citations respectively. Since the researcher has 3 papers with at least 3 citations each and the remaining two with no more than 3 citations each, his h-index is 3.
+
+Note: If there are several possible values for h, the maximum one is taken as the h-index.
+
+Credits:
+Special thanks to @jianchao.li.fighter for adding this problem and creating all test cases.
+
+Solution:
+第一反应是排序可以做，只需要排序后降序遍历一遍，就可以得到答案，但是时间复杂度是O(nlogn)
+如果需要提高时间复杂度一定要使用外部空间，我的想法是使用hashmap，最后遍历一遍就可以了，存的时候把数字和对应的cnt存入map，最后从最高的降序遍历累加
+但是有一个很重要的发现没有考虑到，就是h的值最高也只会和vector的length相等，所以开一个len+1长度的数组就可以了，如果一个数大于len那就在len那位计数
+原理和桶排序很类似，就是给那么多桶，把对应的值放到桶里去。没想到h的最大值，觉得以后应该先估计一下这样的答案区间，然后再去考虑解法。
+
+Code:
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int len = citations.size();
+        int sum = 0;
+        if (len == 0) return 0;
+        int cnt[len + 1];
+        memset(cnt, 0, sizeof(cnt));
+        for (int i = 0; i < len; i ++) {
+            if (citations[i] >= len) {
+                cnt[len] ++;
+            } else {
+                cnt[citations[i]] ++;
+            }
+        }
+        
+        for (int i = len; i > 0; i --) {
+            sum += cnt[i];
+            if (sum >= i) return i;
+        }
+        
+        return 0;
+    }
+};
