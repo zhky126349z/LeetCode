@@ -106,3 +106,4 @@
 2018.03.19 打卡[LeetCode 464. Can I Win], Minimax<br>
 2018.03.19 打卡[LeetCode 274. H-Index], Array<br>
 2018.03.19 打卡[LeetCode 136. Single Number], N/A<br>
+2018.03.20 打卡[LeetCode 55. Jump Game], Array<br>
