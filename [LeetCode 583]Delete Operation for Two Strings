@@ -1,0 +1,45 @@
+Description:
+Given two words word1 and word2, find the minimum number of steps required to make word1 and word2 the same, where in each step you can delete one character in either string.
+
+Example 1:
+Input: "sea", "eat"
+Output: 2
+Explanation: You need one step to make "sea" to "ea" and another step to make "eat" to "ea".
+Note:
+The length of given words won't exceed 500.
+Characters in given words can only be lower-case letters.
+
+Soltuion:
+就是求最长公共子串（不必连续），LCS算法，longest common string。
+动态规划。
+Xi=﹤x1，⋯，xi﹥即X序列的前i个字符 (1≤i≤m)（前缀）
+Yj=﹤y1，⋯，yj﹥即Y序列的前j个字符 (1≤j≤n)（前缀）
+假定Z=﹤z1，⋯，zk﹥∈LCS(X , Y)。
+如果xi = yj（最后一个字符相等），那么zk=xi=yj，反证可以得到zk-1∈LCS(X-1,Y-1)。Z的前缀Zk-1是Xm-1与Yn-1的最长公共子序列。问题就划归到LCS（X-1,Y-1）上
+如果xi != yj（最后一个字符不相等），那么要么Z∈LCS(Xm-1, Y)，要么Z∈LCS(X , Yn-1)。问题化归成求Xm-1与Y的LCS及X与Yn-1的LCS。LCS(X , Y)=max{LCS(Xm-1 , Y), LCS(X , Yn-1)}。
+总结
+c[i, j] = 0 (i = 0 or j =0)
+         c[i - 1, j - 1] + 1 (i, j > 0 and xi = yj)
+         max(c[i - 1, j], c[i, j - 1]) (i, j > 0 and xi != yj)
+
+Code:
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int m = word1.size();
+        int n = word2.size();
+        if (m == 0 || n == 0) return max(m, n);
+        int dp[m][n];
+        memset(dp, 0, sizeof(dp));
+        for (int i = 0; i < m; i ++) {
+            for (int j = 0; j < n; j ++) {
+                if (word1[i] == word2[j]) {
+                    dp[i][j] = (i - 1 >= 0 && j - 1 >= 0) ? dp[i - 1][j - 1] + 1 : 1;    
+                } else {
+                    dp[i][j] = max(i - 1 >= 0 ? dp[i - 1][j] : 0, j - 1 >=0 ? dp[i][j - 1] : 0);
+                }
+            }
+        }
+        return m + n - 2 * dp[m - 1][n - 1];
+    }
+};
