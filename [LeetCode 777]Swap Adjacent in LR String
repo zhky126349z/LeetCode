@@ -1,0 +1,50 @@
+Description:
+In a string composed of 'L', 'R', and 'X' characters, like "RXXLRXRXL", a move consists of either replacing one occurrence of "XL" with "LX", or replacing one occurrence of "RX" with "XR". Given the starting string start and the ending string end, return True if and only if there exists a sequence of moves to transform one string to the other.
+
+Example:
+
+Input: start = "RXXLRXRXL", end = "XRLXXRRLX"
+Output: True
+Explanation:
+We can transform start to end following these steps:
+RXXLRXRXL ->
+XRXLRXRXL ->
+XRLXRXRXL ->
+XRLXXRRXL ->
+XRLXXRRLX
+Note:
+
+1 <= len(start) = len(end) <= 10000.
+Both start and end will only consist of characters in {'L', 'R', 'X'}.
+
+Solution:
+一开始想用双向BFS做，搜爆了，我感觉只有确定可以搜到终点的才能用双向BFS吧。
+然后观察题目发现RX就是R往右，LX就是L往左，只要寻找下一位不等于X的字符，然后判断是否相等，和其位置关系就可以了。
+一开始我还纠结了如果交叉了怎么办，后来发现交叉的情况就是包含在了两个相等字符的相关位置关系里了。
+
+Code:
+class Solution {
+public:
+    bool canTransform(string start, string end) {
+        int st = 0;
+        int en = 0;
+        while(st < start.length() && en < end.length()) {
+            while(st < start.length() && start[st] == 'X') st ++;
+            while(en < end.length() && end[en] == 'X') en ++;
+            if ((st == start.length() && en != end.length()) || (st != start.length() && en == end.length())) {
+                return false;
+            } else if (st == start.length() && en == end.length()) {
+                return true;
+            }
+            if (start[st] != end[en]) return false;
+            if (start[st] == 'L' && st < en) return false;
+            if (start[st] == 'R' && st > en) return false;
+            st ++;
+            en ++;
+            
+        }
+        
+        return true;
+    }
+    
+};
