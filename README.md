@@ -108,3 +108,4 @@
 2018.03.19 打卡[LeetCode 136. Single Number], N/A<br>
 2018.03.20 打卡[LeetCode 55. Jump Game], Array<br>
 2018.03.21 打卡[LeetCode 583. Delete Operation for Two Strings], DP/LCS<br>
+2018.03.21 打卡[LeetCode 606. Construct String from Binary Tree], Tree<br>
