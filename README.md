@@ -112,3 +112,4 @@
 2018.03.21 打卡[LeetCode 18. 4Sum], Array<br>
 2018.03.21 打卡[LeetCode 667. Beautiful Arrangement II], Array<br>
 2018.03.21 打卡[LeetCode 777. Swap Adjacent in LR String], Array<br>
+2018.03.23 打卡[LeetCode 775. Global and Local Inversions], Array<br>
