@@ -1,0 +1,44 @@
+Description:
+We have some permutation A of [0, 1, ..., N - 1], where N is the length of A.
+
+The number of (global) inversions is the number of i < j with 0 <= i < j < N and A[i] > A[j].
+
+The number of local inversions is the number of i with 0 <= i < N and A[i] > A[i+1].
+
+Return true if and only if the number of global inversions is equal to the number of local inversions.
+
+Example 1:
+
+Input: A = [1,0,2]
+Output: true
+Explanation: There is 1 global inversion, and 1 local inversion.
+Example 2:
+
+Input: A = [1,2,0]
+Output: false
+Explanation: There are 2 global inversions, and 1 local inversion.
+Note:
+
+A will be a permutation of [0, 1, ..., A.length - 1].
+A will have length in range [1, 5000].
+The time limit for this problem has been reduced.
+
+Solution:
+自己的想法是发现只有满足A[i] < A[i + 2] ... A[len - 1]，就能满足条件，即当前数比当前数后第二个数到最后所有数都小
+然后看discuss里有说，对于原排列0,1,2,3,4,5，比较每一个数和原排列的offset，如果offset>1说明肯定不成立。
+
+Code:
+class Solution {
+public:
+    bool isIdealPermutation(vector<int>& A) {
+        int curMin = INT_MAX;
+        for (int i = A.size() - 1; i >= 0; i --) {
+            curMin = min(curMin, A[i]);
+            if (i - 2 < 0 || (i - 2 >= 0 && A[i - 2] < curMin)) {
+                continue;
+            }
+            return false;
+        }
+        return true;
+    }
+};
