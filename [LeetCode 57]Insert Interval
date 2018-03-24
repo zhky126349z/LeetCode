@@ -1,0 +1,55 @@
+Description:
+Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
+
+You may assume that the intervals were initially sorted according to their start times.
+
+Example 1:
+Given intervals [1,3],[6,9], insert and merge [2,5] in as [1,5],[6,9].
+
+Example 2:
+Given [1,2],[3,5],[6,7],[8,10],[12,16], insert and merge [4,9] in as [1,2],[3,10],[12,16].
+
+This is because the new interval [4,9] overlaps with [3,5],[6,7],[8,10].
+
+Solution:
+区间插入，一开始想的是用前缀数来表示某个数被多少个区间覆盖，最后重新生成。
+后来发现给的是一个结构体，直接遍历然后维护出一个新的newInterval就行了
+
+Code:
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        vector<Interval> res;
+        Interval newInter = newInterval;
+        bool insert = false;
+        for (int i = 0; i < intervals.size(); i ++) {
+            Interval interval = intervals[i];
+            if (interval.end < newInter.start) {
+                res.push_back(interval);
+                continue;
+            }
+            if (interval.start > newInter.end) {
+                if (!insert) {
+                    insert = true;
+                    res.push_back(newInter);
+                }
+                res.push_back(interval);
+                continue;
+            }
+            newInter.start = min(newInter.start, interval.start);
+            newInter.end = max(newInter.end, interval.end);
+            
+        }
+        if (!insert) res.push_back(newInter);
+        return res;
+    }
+};
