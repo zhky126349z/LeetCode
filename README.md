@@ -114,3 +114,4 @@
 2018.03.21 打卡[LeetCode 777. Swap Adjacent in LR String], Array<br>
 2018.03.23 打卡[LeetCode 775. Global and Local Inversions], Array<br>
 2018.03.24 打卡[LeetCode 57. Insert Interval], N/A<br>
+2018.03.27 打卡[LeetCode 474. Ones and Zeroes], DP<br>
