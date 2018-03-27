@@ -1,0 +1,77 @@
+Description:
+In the computer world, use restricted resource you have to generate maximum benefit is what we always want to pursue.
+
+For now, suppose you are a dominator of m 0s and n 1s respectively. On the other hand, there is an array with strings consisting of only 0s and 1s.
+
+Now your task is to find the maximum number of strings that you can form with given m 0s and n 1s. Each 0 and 1 can be used at most once.
+
+Note:
+The given numbers of 0s and 1s will both not exceed 100
+The size of given string array won't exceed 600.
+Example 1:
+Input: Array = {"10", "0001", "111001", "1", "0"}, m = 5, n = 3
+Output: 4
+
+Explanation: This are totally 4 strings can be formed by the using of 5 0s and 3 1s, which are “10,”0001”,”1”,”0”
+Example 2:
+Input: Array = {"10", "0", "1"}, m = 1, n = 1
+Output: 2
+
+Explanation: You could form "10", but then you'd have nothing left. Better form "0" and "1".
+
+Solution:
+就是一个01背包问题，每个字符串的价值都是1，然后所占用的空间有m和n两维，总共有k个物品，
+dp[k][i][j] = max(dp[k - 1][i][j], dp[k -1][i - x][j - z] + 1)
+dp[k][i][j]表示在第k件物品，有容量i，j时的最大收益，即选或者不选第k件物品，状态就转移到上一件物品选或者不选。
+空间O(kmn)，但是发现dp[k][i][j]只与他上一层迭代结果和上一层左上方的结果有关，所以可以去掉一层将空间优化为O(mn)
+
+Code:
+class Solution {
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+//         int dp[strs.size() + 1][m + 1][n + 1];
+//         memset(dp, 0, sizeof(dp));
+        
+//         for (int k = 1; k <= strs.size(); k ++) {
+//             int zeroNum = 0;
+//             int oneNum = 0;
+//             for (auto ch : strs[k - 1]) {
+//                 if (ch == '0') zeroNum ++;
+//                 if (ch == '1') oneNum ++;
+//             }
+//             cout << zeroNum << " " << oneNum << endl;
+            
+//             for (int i = 1; i <= m; i ++) {
+//                 for (int j = 1; j <= n; j ++) {
+//                     if (i >= zeroNum && j >= oneNum) {
+//                         dp[k][i][j] = max(dp[k - 1][i][j], dp[k - 1][i - zeroNum][j - oneNum] + 1);
+//                     } else {
+//                         dp[k][i][j] = dp[k - 1][i][j];
+//                     }
+//                 }
+//             }
+            
+//         }
+//         return dp[strs.size()][m][n];
+        int dp[m + 1][n + 1];
+        memset(dp, 0, sizeof(dp));
+        for (auto str : strs) {
+            int zeroNum = 0;
+            int oneNum = 0;
+            for (auto ch : str) {
+                if (ch == '0') zeroNum ++;
+                if (ch == '1') oneNum ++;
+            }
+            
+            for (int i = m; i >= zeroNum; i --) {
+                for (int j = n; j >= oneNum; j --) {
+                    dp[i][j] = max(dp[i][j], dp[i - zeroNum][j - oneNum] + 1);
+                }
+            }
+            
+        }
+        
+        return dp[m][n];
+        
+    }
+};
