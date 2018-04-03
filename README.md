@@ -117,3 +117,4 @@
 2018.03.27 打卡[LeetCode 474. Ones and Zeroes], DP<br>
 2018.03.27 打卡[LeetCode 33. Search in Rotated Sorted Array], BinarySearch<br>
 2018.03.27 打卡[LeetCode 639. Decode Ways II], DP<br>
+2018.04.03 打卡[LeetCode 135. Candy], Array<br>
