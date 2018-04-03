@@ -1,0 +1,52 @@
+Description:
+There are N children standing in a line. Each child is assigned a rating value.
+
+You are giving candies to these children subjected to the following requirements:
+
+Each child must have at least one candy.
+Children with a higher rating get more candies than their neighbors.
+What is the minimum candies you must give?
+
+Solution:
+一开始也想到关于连续下降和上升的序列，然后想法是先用一个step来记录当前值，
+然后如果上升就++如果下降就step=1然后不断--，在拐点处把前面一段的结果都进行负数的补偿，把localres加到整体res上，还得记录一个最小值看是否需要前面一个值增大补偿。
+后来发现其实就是分三种情况讨论
+1)如果当前数比前一个数大，step++，累加到res
+2)如果当前数和前一个数相等，step=1，重新开始计数
+3)如果当前数比前一个数小，就cnt++，在1、2步骤时先判断是否cnt==0，如果非零就构造累加一下，即把递减序列反向从1，2,3……构造，注意如果大于递减序列第一个元素的step时，需要补偿。
+
+Code:
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        int step = 1;
+        int res = 1;
+        int cnt = 0;
+        for (int i = 1; i < ratings.size(); i ++) {
+            if (ratings[i] > ratings[i - 1]) {
+                if (cnt != 0) {
+                    res += (cnt + 1 > step) ? ((cnt + 2) * (cnt + 1) / 2 - step) : ((cnt + 1) * cnt / 2);
+                    step = 1;
+                    cnt = 0;
+                }
+                step ++;
+                res += step;
+            }else if (ratings[i] == ratings[i - 1]) {
+                if (cnt != 0) {
+                    res += (cnt + 1 > step) ? ((cnt + 2) * (cnt + 1) / 2 - step) : ((cnt + 1) * cnt / 2);
+                    step = 1;
+                    cnt = 0;
+                }
+                step = 1;
+                res += step;
+            }else if (ratings[i] < ratings[i - 1]) {
+                cnt ++;
+
+            }
+        }
+        if (cnt != 0) {
+            res += (cnt + 1 > step) ? ((cnt + 2) * (cnt + 1) / 2 - step) : ((cnt + 1) * cnt / 2);
+        }
+        return res;
+    }
+};
