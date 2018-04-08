@@ -1,0 +1,39 @@
+Description:
+Given n, how many structurally unique BST's (binary search trees) that store values 1...n?
+
+For example,
+Given n = 3, there are a total of 5 unique BST's.
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+   
+Solution:
+一开始想法是确定根节点，然后递归计算两边各自继续选择根节点的可能结果，将结果数相乘，结果TLE了。
+然后想法是每次确定区间，可能数就是确定的，那么就存在重复计算了的状态，因此考虑将中间结果记忆化，避免不必要的计算。
+再把式子写出来发现其实只跟左边和下边的状态有关，写出动态转移方程，作为dp解决问题
+
+Code:
+class Solution {
+public:
+    int numTrees(int n) {
+        int dp[n + 1][n + 1];
+        memset(dp, 0, sizeof(dp));
+        
+        for (int i = n; i >= 1; i --) {
+            for (int j = 1; j <= n; j ++) {
+                if (i >= j) {
+                    dp[i][j] = 1;
+                } else {
+                    for (int k = i; k <= j; k ++) {
+                        dp[i][j] += (k - 1 > 0 ? dp[i][k - 1] : 1) * (k + 1 <= n ? dp[k + 1][j] : 1);
+                    }
+                }
+            }
+        }
+        
+        return dp[1][n];
+    }
+};
