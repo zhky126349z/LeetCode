@@ -120,3 +120,4 @@
 2018.04.03 打卡[LeetCode 135. Candy], Array<br>
 2018.04.08 打卡[LeetCode 216. Combination Sum III], BackTracking/DFS<br>
 2018.04.08 打卡[LeetCode 328. Odd Even Linked List], LinkedList<br>
+2018.04.08 打卡[LeetCode 38. Count and Say], Array<br>
