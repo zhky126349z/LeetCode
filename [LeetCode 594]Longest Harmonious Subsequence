@@ -1,0 +1,29 @@
+Description:
+We define a harmonious array is an array where the difference between its maximum value and its minimum value is exactly 1.
+
+Now, given an integer array, you need to find the length of its longest harmonious subsequence among all its possible subsequences.
+
+Example 1:
+Input: [1,3,2,2,5,2,3,7]
+Output: 5
+Explanation: The longest harmonious subsequence is [3,2,2,2,3].
+Note: The length of the input array will not exceed 20,000.
+
+Solution:
+map存一下，时间复杂度降到O(n)，或者排序也能做O(nlogn)
+
+Code:
+class Solution {
+public:
+    int findLHS(vector<int>& nums) {
+        int res = 0;
+        unordered_map<int, int> cnt;
+        for (auto num : nums) {
+            cnt[num] ++;
+        }
+        for (auto num : nums) {
+            res = max(res, (cnt[num] == 0 || cnt[num + 1] == 0) ? 0 : (cnt[num] + cnt[num + 1]));
+        }
+        return res;
+    }
+};
