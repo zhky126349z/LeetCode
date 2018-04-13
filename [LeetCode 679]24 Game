@@ -1,0 +1,232 @@
+Description:
+You have 4 cards each containing a number from 1 to 9. You need to judge whether they could operated through *, /, +, -, (, ) to get the value of 24.
+
+Example 1:
+Input: [4, 1, 8, 7]
+Output: True
+Explanation: (8-4) * (7-1) = 24
+Example 2:
+Input: [1, 2, 1, 2]
+Output: False
+Note:
+The division operator / represents real division, not integer division. For example, 4 / (1 - 2/3) = 12.
+Every operation done is between two numbers. In particular, we cannot use - as a unary operator. For example, with [1, 1, 1, 1] as input, the expression -1 - 1 - 1 - 1 is not allowed.
+You cannot concatenate numbers together. For example, if the input is [1, 2, 1, 2], we cannot write this as 12 + 12.
+
+Solution:
+傻了，一开始想到的是列出四个数所有的排列组合，列出所有括号的组合，列出所有操作符的组合，
+然后生成一个中缀表达式，中缀转后缀，计算，巨复杂无比。
+太傻了，只要每次挑两个数加入vector，然后递归挑两个数，直到只剩一个数的时候判断他和24的大小关系就行了。
+
+Code:
+class Solution {
+public:
+    
+    // so silly am I
+    bool judgePoint24(vector<int>& nums) {
+
+        vector<double> doubleNums;
+        for (auto num : nums) {
+            doubleNums.push_back(num * 1.0);
+        }
+        vector<char> ops;
+        ops.push_back('+');
+        ops.push_back('-');
+        ops.push_back('*');
+        ops.push_back('/');
+        
+        
+        return cal(doubleNums, ops);
+    }
+    
+    bool cal(vector<double> nums, vector<char>& ops) {
+        
+        double ep = 0.001;
+        
+        if (nums.size() == 1) {
+            return (fabs(nums[0] - 24) < ep);
+        }
+        
+        for (int i = 0; i < nums.size(); i ++) {
+            for (int j = 0; j < nums.size(); j ++) {
+                if (i == j) continue;
+                vector<double> newNums;
+                    
+                for (int m = 0; m < nums.size(); m ++) {
+                    if (m != i && m != j) {
+                        newNums.push_back(nums[m]);
+                    }
+                }
+                
+                for (int k = 0; k < ops.size(); k ++) {
+                    
+                    if (ops[k] == '+') {
+                        newNums.push_back(nums[i] + nums[j]);
+                    } else if (ops[k] == '-') {
+                        newNums.push_back(nums[i] - nums[j]);
+                    } else if (ops[k] == '*') {
+                        newNums.push_back(nums[i] * nums[j]);
+                    } else if (ops[k] == '/') {
+                        if (fabs(nums[j]) < ep) continue;
+                        newNums.push_back(nums[i] / nums[j]);
+                    }
+                    
+                    if (cal(newNums, ops)) {
+                        return true;
+                    } else {
+                        newNums.pop_back();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    // generate all posible expression and calculate it, so silly am I
+//     bool judgePoint24(vector<int>& nums) {
+
+//         vector<bool> used(4, false);
+//         vector<int> picked;
+//         return pickNums(nums, used, picked);
+//     }
+
+//     bool pickNums(vector<int>& nums, vector<bool>& used, vector<int> picked) {
+//         if (picked.size() == 4) {
+//             vector<int> brackets(4, 0);
+//             return pickBracket(picked, brackets, 0);
+//         }
+//         for (int i = 0; i < 4; i ++) {
+//             if (!used[i]) {
+//                 used[i] = true;
+//                 vector<int> newPicked = picked;
+//                 newPicked.push_back(nums[i]);
+//                 if (pickNums(nums, used, newPicked)) {
+//                     return true;
+//                 } else {
+//                     used[i] = false;
+//                 }
+//             }
+//         }
+//         return false;
+//     }
+
+//     bool pickBracket(vector<int> nums, vector<int> brackets, int pos) {
+//         if (pos == 4) {
+//             return pickOperation(nums, brackets);
+//         }
+//         vector<int> newBrackets = brackets;
+//         for (int i = pos; i < 4; i ++) {
+//             newBrackets[pos] = i;
+//             if (pickBracket(nums, newBrackets, pos + 1)) {
+//                 return true;
+//             }
+//         }
+//         return false;
+//     }
+
+//     bool pickOperation(vector<int> nums, vector<int> brackets) {
+//         vector<char> opr;
+//         opr.push_back('+');
+//         opr.push_back('-');
+//         opr.push_back('*');
+//         opr.push_back('/');
+//         vector<char> pickedOpr(3, ' ');
+//         for (int i = 0; i < 4; i ++) {
+//             pickedOpr[0] = opr[i];
+//             for (int j = 0; j < 4; j ++) {
+//                 pickedOpr[1] = opr[j];
+//                 for (int k = 0; k < 4; k ++) {
+//                     pickedOpr[2] = opr[k];
+//                     if (calRes(nums, brackets, pickedOpr)) {
+//                         return true;
+//                     }
+//                 }
+//             }
+
+//         }
+//         return false;
+//     }
+
+//     bool calRes(vector<int> nums, vector<int> brackets, vector<char> oprs) {
+//         string str = "";
+//         for (int i = 0; i < 4; i ++) {
+//             char num = '0' + nums[i];
+//             str = str + '(' + num;
+//             for (int j = 0; j < 4; j ++) {
+//                 if (brackets[j] == i) {
+//                     str = str + ")";
+//                 }
+//             }
+//             if (i < 3) {
+//                 str = str + oprs[i];
+//             }
+//         }
+//         //cout << str << endl;
+
+//         string cal = "";
+//         stack<char> opr;
+//         for (int i = 0; i < str.length(); i ++) {
+//             if (str[i] == '(') {
+//                 opr.push(str[i]);
+//             } else if (str[i] > '0' && str[i] <= '9') {
+//                 cal = cal + str[i];
+//             } else if (str[i] == ')') {
+//                 while(opr.top() != '(') {
+//                     cal = cal + opr.top();
+//                     opr.pop();
+//                 }
+//                 opr.pop();
+//             } else if (str[i] == '+' || str[i] == '-'){
+//                 while(!opr.empty() && opr.top() != '(') {
+//                     cal = cal + opr.top();
+//                     opr.pop();
+//                 }
+//                 opr.push(str[i]);
+//             } else if (str[i] == '*' || str[i] == '/'){
+//                 while(!opr.empty() && (opr.top() == '*' || opr.top() == '/')) {
+//                     cal = cal + opr.top();
+//                     opr.pop();
+//                 }
+//                 opr.push(str[i]);
+//             }
+//         }
+
+//         while(!opr.empty()) {
+//             cal = cal + opr.top();
+//             opr.pop();
+//         }
+
+//         stack<double> res;
+//         for (int i = 0; i < cal.length(); i ++) {
+//             if (cal[i] > '0' && cal[i] <= '9') {
+//                 res.push((cal[i] - '0') * 1.0);
+//             } else {
+//                 double num2 = res.top();
+//                 res.pop();
+//                 double num1 = res.top();
+//                 res.pop();
+//                 if (cal[i] == '+') {
+//                     res.push(num1 + num2);
+//                 } else if (cal[i] == '-') {
+//                     res.push(num1 - num2);
+//                 } else if (cal[i] == '*') {
+//                     res.push(num1 * num2);
+//                 } else if (cal[i] == '/') {
+//                     if (fabs(num2) < 0.01) {
+//                         return false;
+//                     }
+//                     res.push(num1 / num2);
+//                 }
+//             }
+//         }
+
+//         if (fabs(res.top() - 24) < 0.1) {
+//             //cout << str << endl;
+//             return true;
+//         }
+
+//         return false;
+//     }
+
+};
