@@ -1,0 +1,65 @@
+Description:
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+
+For example,
+Given:
+s1 = "aabcc",
+s2 = "dbbca",
+
+When s3 = "aadbbcbcac", return true.
+When s3 = "aadbbbaccc", return false.
+
+Solution:
+一开始的想法是从后往前，记忆化搜索因为s3最后一个字符要么来自s1，要么来自s2，s3能否被s2和s1按序组成，需要满足
+F(s3[i], s2[j], s1[k]) = F(s3[i-1], s2[j-1], s1[k]) (s3[i] == s2[j]) || F(s3[i-1], s2[j], s3[k-1]) (s3[i] == s1[k])
+然后一开始的想法是根据这个思路去搜索，但是肯定需要记录，想的是用一个map记录s3[i]能否被组成，但是最后还是超时了，
+其实是因为s3[i]能被组成的情况很少，大量的情况是不能组成的。所以需要考虑如何记录不能被组成的情况。
+然后就有一个重要的观察，如果j和k固定，那i=j+k是一定的，就是固定长度的s1和s2只能组成特定长度的s3，
+所以可以用j和k来表示长度为j的s2和长度为k的s3能否组成长度为j+k的s1，需要一个bool型二维数组来记录状态，大量减少判断条件，实现记忆化DFS。
+
+记忆化DFS肯定可以以DP的方式实现，动态转移方程可以从上述的式子中提炼
+dp[i][j] = (s1[i - 1] == s3[i + j - 1] && (i > 0 ? dp[i - 1][j] : true)) ||
+                    (s2[j - 1] == s3[i + j - 1] && (j > 0 ? dp[i][j - 1] : true))
+                    
+Code:
+class Solution {
+public:
+    // DFS
+    //bool invalid[1000][1000];
+//     vector<vector<bool>> invalid;
+    
+//     bool isInterleave(string s1, string s2, string s3) {
+//         if (s1.length() + s2.length() != s3.length()) return false;
+//         for (int i = 0; i <= s1.length(); i ++) {
+//             invalid.push_back(vector<bool>(s2.length() + 1, false));
+//         }
+//         return dfs(s1, s2, s3, 0, 0, 0);
+//     }
+
+//     // substring is slow
+//     bool dfs(string s1, string s2, string s3, int i, int j, int k) {
+//         if (invalid[i][j]) return false;
+//         if (k == s3.length() && k == i + j) return true;
+//         bool canForm = false;
+//         canForm = ((i < s1.length() && k < s3.length() && s1[i] == s3[k]) ? dfs(s1, s2, s3, i + 1, j, k + 1) : false) ||
+//             ((j < s2.length() && k < s3.length() && s2[j] == s3[k]) ? dfs(s1, s2, s3, i, j + 1, k + 1) : false);
+//         if (!canForm) invalid[i][j] = true;
+//         return  canForm;
+//     }
+    
+    // DP
+    bool isInterleave(string s1, string s2, string s3) {
+        if (s1.length() + s2.length() != s3.length()) return false;
+        bool dp[s1.length() + 1][s2.length() + 1];
+        memset(dp, false, sizeof(dp));
+        dp[0][0] = true;
+        for (int i = 0; i <= s1.length(); i ++) {
+            for (int j = 0; j <= s2.length(); j ++) {
+                dp[i][j] = (s1[i - 1] == s3[i + j - 1] && (i > 0 ? dp[i - 1][j] : true)) ||
+                    (s2[j - 1] == s3[i + j - 1] && (j > 0 ? dp[i][j - 1] : true));
+            }
+        }
+        return dp[s1.length()][s2.length()];
+    }
+    
+};
