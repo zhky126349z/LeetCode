@@ -127,3 +127,4 @@
 2018.04.12 打卡[LeetCode 97. Interleaving String], DP/MemorySearch<br>
 2018.04.12 打卡[LeetCode 594. Longest Harmonious Subsequence], HashMap<br>
 2018.04.12 打卡[LeetCode 679. 24 Game], Recursive<br>
+2018.04.13 打卡[LeetCode 806. Number of Lines To Write String], N/A<br>
