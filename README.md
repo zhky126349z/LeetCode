@@ -128,3 +128,4 @@
 2018.04.12 打卡[LeetCode 594. Longest Harmonious Subsequence], HashMap<br>
 2018.04.12 打卡[LeetCode 679. 24 Game], Recursive<br>
 2018.04.13 打卡[LeetCode 806. Number of Lines To Write String], N/A<br>
+2018.04.16 打卡[LeetCode 237. Delete Node in a Linked List], N/A<br>
