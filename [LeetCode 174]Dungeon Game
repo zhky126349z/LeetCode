@@ -1,0 +1,58 @@
+Description:
+The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of M x N rooms laid out in a 2D grid. Our valiant knight (K) was initially positioned in the top-left room and must fight his way through the dungeon to rescue the princess.
+
+The knight has an initial health point represented by a positive integer. If at any point his health point drops to 0 or below, he dies immediately.
+
+Some of the rooms are guarded by demons, so the knight loses health (negative integers) upon entering these rooms; other rooms are either empty (0's) or contain magic orbs that increase the knight's health (positive integers).
+
+In order to reach the princess as quickly as possible, the knight decides to move only rightward or downward in each step.
+
+ 
+
+Write a function to determine the knight's minimum initial health so that he is able to rescue the princess.
+
+For example, given the dungeon below, the initial health of the knight must be at least 7 if he follows the optimal path RIGHT-> RIGHT -> DOWN -> DOWN.
+
+-2 (K)	-3	3
+-5	-10	1
+10	30	-5 (P)
+
+Notes:
+
+The knight's health has no upper bound.
+Any room can contain threats or power-ups, even the first room the knight enters and the bottom-right room where the princess is imprisoned.
+
+Solution:
+问题是，在左上角需要的最小值，能保证达到右下角时值为正（1），即求左上角的最小值。
+知道是DP，一开始想法是要找到一条路径，路径的中间值（中间出现的和）最小，但是该问题无法划分为子问题。这种中间值问题，因为有负数的存在，局部最优并不一定是整体最优。
+那要怎么进行子问题划分呢。
+观察1：最后一格访问过后的值一定是1，那么在最后一格所需要的最小值即为（1 - grid[i][j]）。
+观察2：某一格的数值只能从左或者上转移过来。
+那么，当我们知道某一格需要的最小数值时，我们就可以知道其左和上两格所需要的最小值，
+如左边即为(dp[i][j] - grid[i][j - 1])，
+上边即为(dp[i][j] - grid[i - 1][j])。
+但是显然某一格可以从它的右或者下转移过来，所以我们取他右或下的最小值进行转移（因为减的都是同一个数）。
+还有一个问题，如果转移过来发现是负数，即在当前格存活需要的数值为负，但是题目限制必须为正，所以需要取max(1, dp[i][j])，
+即反过来想只要从左上转移到这格的时候有1，但是不能为负，就足够一直到右下角了。
+反思：DP主要是状态的转移，首先你需要写出状态表示什么，其次你需要写出状态的转移的方程，如何转移，并确保他是对的。并且他需要能被划分为子问题。
+即，子问题的最优解是整个问题的最优解
+
+Code:
+class Solution {
+public:
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        if (dungeon.size() == 0) return 1;
+        int m = dungeon.size();
+        int n = dungeon[0].size();
+        vector<vector<int> > dp(m + 1, vector<int>(n + 1, INT_MAX));
+        dp[m][n - 1] = 1;
+        dp[m - 1][n] = 1;
+        for (int i = m - 1; i >= 0; i --) {
+            for (int j = n - 1; j >= 0; j --) {
+                int need = min(dp[i + 1][j], dp[i][j + 1]) - dungeon[i][j];
+                dp[i][j] = max(1, need);
+            }
+        }
+        return dp[0][0];
+    }
+};
