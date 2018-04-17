@@ -1,0 +1,66 @@
+Description:
+In a directed graph, we start at some node and every turn, walk along a directed edge of the graph.  If we reach a node that is terminal (that is, it has no outgoing directed edges), we stop.
+
+Now, say our starting node is eventually safe if and only if we must eventually walk to a terminal node.  More specifically, there exists a natural number K so that for any choice of where to walk, we must have stopped at a terminal node in less than K steps.
+
+Which nodes are eventually safe?  Return them as an array in sorted order.
+
+The directed graph has N nodes with labels 0, 1, ..., N-1, where N is the length of graph.  The graph is given in the following form: graph[i] is a list of labels j such that (i, j) is a directed edge of the graph.
+
+Example:
+Input: graph = [[1,2],[2,3],[5],[0],[5],[],[]]
+Output: [2,4,5,6]
+Here is a diagram of the above graph.
+
+Illustration of graph
+
+Note:
+
+graph will have length at most 10000.
+The number of edges in the graph will not exceed 32000.
+Each graph[i] will be a sorted list of different integers, chosen within the range [0, graph.length - 1].
+
+Solution:
+一开始想法是就是找有向图里所有的环，然后那些不在环路上的结点则为safe结点，一开始用的暴力DFS超时，
+主要问题在于记录了路径之后，找到一个环后，每次要把所有路径标记一次，时间复杂度很高。
+考虑是否有办法不用重复标记每个在环上的结点。
+重要的观察，每个结点如果被判定为了在环路，则不会是安全结点。
+我们可以每次假设一个结点在环路，DFS下去，如果递归下去发现确实是环路则一路递归回主循环，不必修改；如果发现不是环路，则递归上去把结点修改为安全结点。
+染色的思路，把结点设为0：未访问，1：已访问，安全，2：已访问，不安全。
+
+Code:
+class Solution {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        vector<int> res;
+        if (graph.size() == 0) return res;
+        // 0:not visited, 1: safe, 2: not safe
+        vector<int> color(graph.size(), 0);
+
+        for (int i = 0; i < graph.size(); i ++) {
+            if (dfs(i, graph, color)) res.push_back(i);
+            
+        }
+
+        return res;
+    }
+
+    bool dfs(int start, vector<vector<int>>& graph, vector<int>& color) {
+
+        if (color[start] != 0) return color[start] == 1;
+        vector<int> edges = graph[start];
+        color[start] = 2;
+        for (auto node : edges) {
+            if (!dfs(node, graph, color)) {
+                return false;
+            }
+        }
+        color[start] = 1;
+        
+        
+        return true;
+    }
+
+
+
+};
