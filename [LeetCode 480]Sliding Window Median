@@ -1,0 +1,143 @@
+Description:
+Median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value. So the median is the mean of the two middle value.
+
+Examples: 
+[2,3,4] , the median is 3
+
+[2,3], the median is (2 + 3) / 2 = 2.5
+
+Given an array nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position. Your job is to output the median array for each window in the original array.
+
+For example,
+Given nums = [1,3,-1,-3,5,3,6,7], and k = 3.
+
+Window position                Median
+---------------               -----
+[1  3  -1] -3  5  3  6  7       1
+ 1 [3  -1  -3] 5  3  6  7       -1
+ 1  3 [-1  -3  5] 3  6  7       -1
+ 1  3  -1 [-3  5  3] 6  7       3
+ 1  3  -1  -3 [5  3  6] 7       5
+ 1  3  -1  -3  5 [3  6  7]      6
+Therefore, return the median sliding window as [1,-1,-1,3,5,6].
+
+Solution:
+一开始想是不是能用stream的中位数，维护一个最大堆和最小堆来做，发现并不行，
+因为需要删除元素，emmmm其实也行，但是你在最大堆和最小堆里的查找代价就比较高，需要O(k)删除再O(logk)插入，
+因此我们考虑换一个数据结构来存比他小和比他大的两个数据集，
+我想到的是用两个BST来代替，这样获取最大值/最小值是logk，删除也可以在logk里实现，就是实现起来有点麻烦。
+因此考虑是否有已有STL，考虑用map来代替，因为map是用红黑树实现的，内部是有序的，并且你可以直接访问它的最大值/最小值，
+一个bigger的map存较大部分的数，smaller的map存较小部分的数，插入新元素删除老元素时，保证bigger的元素数量>=smller的元素数量，
+如果不满足就进行转移，策略是把bigger里最小的转移到smaller或者把smaller里最大的转移到bigger。
+然后动态得到这段数的中位数。
+
+最简单的方法，用STL里的multiSet，可以存重复key的set，并且是有序的，然后动态维护window就可以了。
+
+Code:
+class Solution {
+public:
+    map<int, int> bigger;
+    map<int, int> smaller;
+    int bigCnt = 0;
+    int smaCnt = 0;
+    vector<double> res;
+
+    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
+        if (nums.size() == 0) return res;
+        for (int i = 0; i < k ; i ++) {
+            insert(nums[i]);
+        }
+        getMedia();
+        for (int i = 0; i < nums.size() - k; i ++) {
+            erase(nums[i]);
+            insert(nums[i + k]);
+            getMedia();
+        }
+        return res;
+    }
+
+private:
+    void insert(int num) {
+        if (bigCnt == smaCnt) {
+            if (smaCnt == 0) {
+                bigger[num] ++;
+                bigCnt ++;
+            } else {
+                auto smaIt = -- smaller.end();
+                if (num > smaIt->first) {
+                    bigger[num] ++;
+                    bigCnt ++;
+                } else {
+                    int temp = smaIt->first;
+                    smaIt->second --;
+                    if (smaIt->second == 0) {
+                        smaller.erase(smaIt);
+                    }
+                    bigger[temp] ++;
+                    bigCnt ++;
+                    smaller[num] ++;
+                }
+            }
+        } else if (bigCnt > smaCnt){
+            auto bigIt = bigger.begin();
+            if (num < bigIt->first) {
+                smaller[num] ++;
+                smaCnt ++;
+            } else {
+                int temp = bigIt->first;
+                bigIt->second --;
+                if (bigIt->second == 0) {
+                    bigger.erase(bigIt);
+                }
+                smaller[temp] ++;
+                smaCnt ++;
+                bigger[num] ++;
+            }
+        }
+        return ;
+    }
+
+    void getMedia() {
+        double big = 0.0;
+        double sma = 0.0;
+        // cout << sma << " " << big << endl;
+        if (bigCnt == smaCnt) {
+            big = bigger.begin()->first * 1.0;
+            sma = (-- smaller.end())->first * 1.0;
+            res.push_back((big + sma) / 2.0);
+        } else {
+            big = bigger.begin()->first * 1.0;
+            res.push_back(big);
+        }
+        return ;
+    }
+
+    void erase(int num) {
+        auto bigIt = bigger.begin();
+        if (num < bigIt->first) {
+            auto fid = smaller.find(num);
+            if ((-- (fid->second)) == 0) {
+                smaller.erase(fid);
+            }
+            smaCnt --;
+        } else {
+            auto fid = bigger.find(num);
+            if ((-- (fid->second)) == 0) {
+                bigger.erase(fid);
+            }
+            bigCnt --;
+        }
+        
+        if (bigCnt < smaCnt) {
+            auto smaIt = -- smaller.end();
+            bigger[smaIt->first] ++;
+            bigCnt ++;
+            if ((-- (smaIt->second)) == 0) {
+                smaller.erase(smaIt);
+            }
+            smaCnt --;
+        }
+        return ;
+    }
+
+};
