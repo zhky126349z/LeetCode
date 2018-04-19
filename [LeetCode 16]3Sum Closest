@@ -1,0 +1,83 @@
+Description:
+Given an array nums of n integers and an integer target, find three integers in nums such that the sum is closest to target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+Example:
+
+Given array nums = [-1, 2, 1, -4], and target = 1.
+
+The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+Solution:
+与找三个数的和的target的算法类似，排序后O(n^2)
+
+Code:
+
+// 这个要快一点
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int res;
+        if (nums.size() < 3) return res;
+        int left, right, sum;
+        sort(nums.begin(), nums.end());
+        res = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < nums.size() - 2; i ++) {
+            left = i + 1;
+            right = nums.size() - 1;
+            while(left < right) {
+                sum = nums[i] + nums[left] + nums[right];
+                if (abs(sum - target) < abs(res - target)) {
+                    res = sum;
+                }
+                while(left < right && sum < target) {
+                    left ++;
+                    if (left >= right) break;
+                    sum = nums[i] + nums[left] + nums[right];
+                    if (abs(sum - target) < abs(res - target)) {
+                        res = sum;
+                    }
+                }
+                while(left < right && sum > target) {
+                    right --;
+                    if (left >= right) break;
+                    sum = nums[i] + nums[left] + nums[right];
+                    if (abs(sum - target) < abs(res - target)) {
+                        res = sum;
+                    }
+                }
+                if (sum == target) {
+                    return target;
+                }
+            }
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        int res;
+        if (nums.size() < 3) return res;
+        int left, right, sum;
+        sort(nums.begin(), nums.end());
+        res = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < nums.size() - 2; i ++) {
+            left = i + 1;
+            right = nums.size() - 1;
+            while(left < right) {
+                sum = nums[i] + nums[left] + nums[right];
+                if (abs(sum - target) < abs(res - target)) {
+                    res = sum;
+                }
+                if (sum < target) {
+                    left ++;
+                } else {
+                    right --;
+                }
+            }
+        }
+        return res;
+    }
+};
