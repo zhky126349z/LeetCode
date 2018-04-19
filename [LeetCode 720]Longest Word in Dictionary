@@ -21,7 +21,8 @@ The length of words will be in the range [1, 1000].
 The length of words[i] will be in the range [1, 30].
 
 Solution:
-Trie+DFS，先建一个字典树然后DFS找最长通路的路径string
+Trie+DFS，先建一个字典树然后DFS找最长通路的路径string。
+或者用一个set存，先排序nlogn然后当当前string长度为1或者string.substr(0, lenght - 1)的在set里的话，就把它也加入set，并更新res
 
 Code:
 class Solution {
