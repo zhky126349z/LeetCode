@@ -1,0 +1,61 @@
+Description:
+Given an integer n, return 1 - n in lexicographical order.
+
+For example, given 13, return: [1,10,11,12,13,2,3,4,5,6,7,8,9].
+
+Please optimize your algorithm to use less time and space. The input size may be as large as 5,000,000.
+
+Solution:
+题意是输出1-n的字典序的排列
+一开始的想法是DFS，把数字用字符串进行处理，但是TLE了，考虑是字符串添加和过多无用的迭代。
+然后想直接再循环里模拟找到下一个数，确实是可以，主要是注意遇到9回退的时候需要一直回退到首个不是9的那位然后叠加。
+再想到底可不可以用DFS，应该是可以的，不用字符串代替数字，直接用数字，并且多加一层判断，然后没TLE了
+
+Code:
+// class Solution {
+// public:
+//     vector<int> lexicalOrder(int n) {
+//         vector<int> res;
+//         int cur = 1;
+//         for (int i = 1; i <= n; i ++) {
+//             res.push_back(cur);
+//             if (cur * 10 <= n) {
+//                 cur = cur * 10;
+//             } else if (cur % 10 != 9 && cur + 1 <= n) {
+//                 cur = cur + 1;
+//             } else {
+//                 while((cur / 10) % 10 == 9) {
+//                     cur = cur / 10;    
+//                 }
+//                 cur = cur / 10 + 1;
+//             }
+//         }
+//         return res;
+//     }
+// };
+
+class Solution {
+public:
+    vector<int> lexicalOrder(int n) {
+        vector<int> res;
+        for (int i = 1; i <= 9; i ++) {
+            DFS(res, i, n);   
+        }
+        return res;
+    }
+    
+private:
+    void DFS(vector<int>& res, int cur, int n) {
+        if (cur > n) return ;
+        
+        res.push_back(cur);
+        
+        for (int i = 0; i <= 9; i ++) {
+            if (cur * 10 + i <= n) {
+                DFS(res, cur * 10 + i, n);
+            }
+        }
+        return ;
+    }
+    
+};
