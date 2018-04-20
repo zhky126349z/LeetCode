@@ -1,0 +1,93 @@
+Description:
+Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*'.
+
+'?' Matches any single character.
+'*' Matches any sequence of characters (including the empty sequence).
+The matching should cover the entire input string (not partial).
+
+Note:
+
+s could be empty and contains only lowercase letters a-z.
+p could be empty and contains only lowercase letters a-z, and characters like ? or *.
+Example 1:
+
+Input:
+s = "aa"
+p = "a"
+Output: false
+Explanation: "a" does not match the entire string "aa".
+Example 2:
+
+Input:
+s = "aa"
+p = "*"
+Output: true
+Explanation: '*' matches any sequence.
+Example 3:
+
+Input:
+s = "cb"
+p = "?a"
+Output: false
+Explanation: '?' matches 'c', but the second letter is 'a', which does not match 'b'.
+Example 4:
+
+Input:
+s = "adceb"
+p = "*a*b"
+Output: true
+Explanation: The first '*' matches the empty sequence, while the second '*' matches the substring "dce".
+Example 5:
+
+Input:
+s = "acdcb"
+p = "a*c?b"
+Output: false
+
+Solution:
+第一时间想到的是DP，开一个二维bool数组，dp[i][j]表示s前i-1个字符和p的前j-1个字符能否匹配。
+然后左上到右下遍历，主要是对于"*"的处理。
+1). if(p[j-1]!='*') f(i, j) = f(i-1, j-1) && (s[i-1]==p[j-1] || p[j-1]=='?')
+2). if(p[j-1]=='*') f(i, j) = f(i, j-1) || f(i-1, j)
+还有一种方法，用两个pointer遍历字符串，并且维护上一个"*"的位置，如果不匹配了回退到上一个"*"的位置，并且往后多移一位，在一些情况能降低时间复杂度，
+但是最坏情况还是会退化为O(mn)与DP一样。
+
+Code:
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        bool ans;
+        vector<vector<bool> > dp(p.size() + 1, vector<bool>(s.size() + 1, false));
+        for (int i = 0; i <= p.size(); i ++) {
+            for (int j = 0; j <= s.size(); j ++) {
+                // dp
+                if (j == 0 && i == 0) {
+                    dp[i][j] = true;
+                } else if (i == 0 && j != 0) {
+                    dp[i][j] = false;
+                } else if (i != 0 && j == 0) {
+                    dp[i][j] = (p[i - 1] == '*') ? dp[i - 1][j] : false;
+                    // if (p[i - 1] == '*') {
+                    //     dp[i][j] = dp[i - 1][j];
+                    // } else {
+                    //     dp[i][j] = false;
+                    // }
+                } else if (p[i - 1] == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] ? (p[i - 1] == '?' || (p[i - 1] == s[j - 1])) : false;
+                    // if (dp[i - 1][j - 1]) {
+                    //     if (p[i - 1] == '?') {
+                    //         dp[i][j] = true;
+                    //     } else {
+                    //         dp[i][j] = (p[i - 1] == s[j - 1]);
+                    //     }
+                    // } else {
+                    //     dp[i][j] = false;
+                    // }
+                }
+            }
+        }
+        return dp[p.size()][s.size()];
+    }
+};
