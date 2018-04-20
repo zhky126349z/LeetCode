@@ -1,0 +1,23 @@
+Description:
+Given an integer, write a function to determine if it is a power of two.
+
+Credits:
+Special thanks to @jianchao.li.fighter for adding this problem and creating all test cases.
+
+Solution:
+如果一个数是2的阶乘那么它的二进制形式肯定只有一个1，
+所以用n & (n - 1)来抹除最后一位1，如果结果为0，则说明是2的阶乘，
+太机智了
+
+Code:
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        // if (n == 0) return false;
+        // while(n > 1 && n % 2 == 0) {
+        //     n = n / 2;
+        // }
+        // return n == 1;
+        return n > 0 && (!(n & (n - 1)));
+    }
+};
