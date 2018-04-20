@@ -136,3 +136,4 @@
 2018.04.19 打卡[LeetCode 16. 3Sum Closest], N/A<br>
 2018.04.20 打卡[LeetCode 386. Lexicographical Numbers], N/A/DFS<br>
 2018.04.20 打卡[LeetCode 44. Wildcard Matching], DP<br>
+2018.04.20 打卡[LeetCode 231. Power of Two], N/A<br>
