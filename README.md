@@ -134,3 +134,4 @@
 2018.04.17 打卡[LeetCode 174. Dungeon Game], DP<br>
 2018.04.18 打卡[LeetCode 480. Sliding Window Median], HashMap/BinarySearchTree/MultiSet<br>
 2018.04.19 打卡[LeetCode 16. 3Sum Closest], N/A<br>
+2018.04.20 打卡[LeetCode 386. Lexicographical Numbers], N/A/DFS<br>
