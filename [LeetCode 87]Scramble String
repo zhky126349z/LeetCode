@@ -1,0 +1,95 @@
+Description:
+Given a string s1, we may represent it as a binary tree by partitioning it to two non-empty substrings recursively.
+
+Below is one possible representation of s1 = "great":
+
+    great
+   /    \
+  gr    eat
+ / \    /  \
+g   r  e   at
+           / \
+          a   t
+To scramble the string, we may choose any non-leaf node and swap its two children.
+
+For example, if we choose the node "gr" and swap its two children, it produces a scrambled string "rgeat".
+
+    rgeat
+   /    \
+  rg    eat
+ / \    /  \
+r   g  e   at
+           / \
+          a   t
+We say that "rgeat" is a scrambled string of "great".
+
+Similarly, if we continue to swap the children of nodes "eat" and "at", it produces a scrambled string "rgtae".
+
+    rgtae
+   /    \
+  rg    tae
+ / \    /  \
+r   g  ta  e
+       / \
+      t   a
+We say that "rgtae" is a scrambled string of "great".
+
+Given two strings s1 and s2 of the same length, determine if s2 is a scrambled string of s1.
+
+Example 1:
+
+Input: s1 = "great", s2 = "rgeat"
+Output: true
+Example 2:
+
+Input: s1 = "abcde", s2 = "caebd"
+Output: false
+
+Solution:
+开始没什么思路，后来发现不就是一个简单的递归吗，按照切分点遍历，
+s1前半部=s2前半部，或者s1前半部=s2后半部，只要有一个成立即成立，
+递归到最后如果s1==s2则return true。
+然后用一个map来记录重复状态，让重复状态只计算一次，key就用s1+s2来表示，因为每次比较的s1和s2一定一样长，所以情况一定相同可以作为重复状态记录
+
+Code:
+class Solution {
+
+private:
+    bool memorySearch(unordered_map<string, int>& mem, string s1, string s2) {
+        bool res = false;
+        if (mem.find(s1 + s2) != mem.end()) {
+            return mem[s1 + s2];
+        }
+        if (s1 == s2) {
+            return mem[s1 + s2] = true;
+        }
+
+        vector<int> cnt(26, 0);
+        for (int i = 0; i < s1.length(); i ++) {
+            cnt[s1[i] - 'a'] ++;
+            cnt[s2[i] - 'a'] --;
+        }
+
+        for (int i = 0; i < 26; i ++) {
+            if (cnt[i] != 0) {
+                return mem[s1 + s2] = false;
+            }
+        }
+
+        int len = s1.length();
+        for (int i = 1; i < len; i ++) {
+            res = res | (memorySearch(mem, s1.substr(0, i), s2.substr(0, i)) && memorySearch(mem, s1.substr(i), s2.substr(i)));
+            if (res) return mem[s1 + s2] = res;
+            res = res | (memorySearch(mem, s1.substr(0, i), s2.substr(len - i)) && memorySearch(mem, s1.substr(i), s2.substr(0, len - i)));
+            if (res) return mem[s1 + s2] = res;
+        }
+        return mem[s1 + s2] = res;
+    }
+
+public:
+    bool isScramble(string s1, string s2) {
+        unordered_map<string, int> mem;
+        if (s1.length() != s2.length()) return false;
+        return memorySearch(mem, s1, s2);
+    }
+};
