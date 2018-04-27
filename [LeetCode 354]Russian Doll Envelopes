@@ -1,0 +1,105 @@
+Description:
+You have a number of envelopes with widths and heights given as a pair of integers (w, h). One envelope can fit into another if and only if both the width and height of one envelope is greater than the width and height of the other envelope.
+
+What is the maximum number of envelopes can you Russian doll? (put one inside other)
+
+Example:
+Given envelopes = [[5,4],[6,4],[6,7],[2,3]], the maximum number of envelopes you can Russian doll is 3 ([2,3] => [5,4] => [6,7]).
+
+Solution:
+就是找一个二维的最长递增序列的长度（不用连续）。
+首先肯定要对first排序，
+然后，我一开始的想法是构建一个树，每次在之前的结点上判断是否可以链接在结点之后，如果可以就链接上，
+时间复杂度O(n^2)，然后用DFS找出最长的路径，最坏情况下是会有n^2个结点的所以时间复杂度也是O(n^2)。超时。
+然后发现在对first排序后，问题就变成了找second的最长递增序列，但是有一个问题是对第一个元素排序的时候，
+需要把second大的放到前面，这样保证了first相同时，second递增的情况。
+问题就变成了LIS，传统的LIS算法dp时间复杂度为O(n^2)，需要用一个二分的优化。
+即维护一个数组，元素值表示在（下标+1）的当前长度时的最后元素的最小值。
+如果大于当前数组中最后一个元素则直接加入数组，否则在数组中寻找他能替代的位置，因为数组显然是有序的，所以查找时间在O(nlogn)。
+如3,5，7,6,10，9,11
+3
+3,5
+3,5,7
+3,5,6
+3,5,6,10
+3,5,6,9
+3,5,6,9,11
+
+Code:
+class Solution {
+
+private:
+
+    // struct TreeNode {
+    //     pair<int, int> val;
+    //     vector<TreeNode*> next;
+    //     TreeNode(pair<int, int> doll) : val(doll) {}
+    // };
+
+    static bool cmp(pair<int, int> a, pair<int, int> b) {
+        if (a.first < b.first) {
+            return true;
+        } else if (a.first == b.first && a.second >= b.second) {
+            return true;
+        }
+        return false;
+    }
+
+    // void DFS(TreeNode* node, int curDepth, int& maxDepth) {
+    //     int cur = curDepth + 1;
+    //     maxDepth = max(maxDepth, cur);
+    //     for (int i = 0; i < node->next.size(); i ++) {
+    //         DFS(node->next[i], cur, maxDepth);
+    //     }
+    //     return ;
+    // }
+
+public:
+    int maxEnvelopes(vector<pair<int, int> >& envelopes) {
+        int res = 0;
+        if (envelopes.size() == 0) return res;
+        sort(envelopes.begin(), envelopes.end(), cmp);
+//         TreeNode* nodes[envelopes.size() + 1];
+//         nodes[0] = new TreeNode(make_pair(-1, -1));
+
+//         for (int i = 0; i < envelopes.size(); i ++) {
+//             nodes[i + 1] = new TreeNode(envelopes[i]);
+//             for (int j = 0; j < i + 1; j ++) {
+//                 if (nodes[j]->val.first < nodes[i + 1]->val.first &&
+//                    nodes[j]->val.second < nodes[i + 1]->val.second) {
+//                     nodes[j]->next.push_back(nodes[i + 1]);
+//                 }
+//             }
+//         }
+
+//         DFS(nodes[0], 0, res);
+//         return res - 1;
+        vector<int> minLast;
+        int left, right, mid;
+        for (int i = 0; i < envelopes.size(); i ++) {
+            if (minLast.size() == 0 || minLast[minLast.size() - 1] < envelopes[i].second) {
+                minLast.push_back(envelopes[i].second);
+                continue;
+            }
+            left = 0;
+            right = minLast.size() - 1;
+            mid = (left + right) / 2;
+            while(left < right - 1) {
+                mid = (left + right) / 2;
+                if (minLast[mid] < envelopes[i].second) {
+                    left = mid;
+                }
+                else if (minLast[mid] >= envelopes[i].second) {
+                    right = mid;
+                }
+            }
+            if (minLast[left] >= envelopes[i].second) {
+                minLast[left] = envelopes[i].second;
+            } else {
+                minLast[right] = envelopes[i].second;
+            }
+        }
+
+        return res = minLast.size();
+    }
+};
