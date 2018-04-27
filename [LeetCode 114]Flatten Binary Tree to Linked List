@@ -1,0 +1,70 @@
+Description:
+Given a binary tree, flatten it to a linked list in-place.
+
+For example, given the following tree:
+
+    1
+   / \
+  2   5
+ / \   \
+3   4   6
+The flattened tree should look like:
+
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+
+
+Solution:
+把一个binary tree退化成链表，
+我的方法是用了一个先序遍历，先找到最左节点的父节点，把他的左儿子移到他的右儿子和他自己之间，直到遍历所有的结点都没有左儿子为止，
+觉得有点复杂，因为在把左儿子移到右儿子和自己中间时，重复遍历了很多已经遍历过的结点，因为递归回来的时候他的左儿子肯定没有左儿子，所以可以实现效果。
+但是用这种方法不可避免需要重复遍历，因为他的右儿子上的某些结点可能还有左儿子。但是应该还是在O（n）的复杂度内。
+还有一种方法，对于当前结点，每次先找到他左儿子树中最后需要与右儿子连接的结点，直接把整个坐子树移到连接到右儿子和当前结点之间。
+emmmm好像一样需要多次遍历，因为你需要去找到连接结点。
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+
+private:
+    void preOrder(TreeNode* node) {
+        if (node->left) {
+            preOrder(node->left);
+            TreeNode* startNode = node->left;
+            TreeNode* endNode = startNode;
+            TreeNode* temp = node->right;
+            while(endNode->right) {
+                endNode = endNode->right;
+            }
+            node->right = startNode;
+            node->left = NULL;
+            endNode->right = temp;
+        }
+        
+        if (node->right) preOrder(node->right);
+        
+    }
+    
+public:
+    void flatten(TreeNode* root) {
+        if (root == NULL) return;
+        preOrder(root);
+    }
+};
