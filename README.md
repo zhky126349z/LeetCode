@@ -139,3 +139,6 @@
 2018.04.20 打卡[LeetCode 231. Power of Two], N/A<br>
 2018.04.25 打卡[LeetCode 720. Longest Word in Dictionary], Trie+DFS<br>
 2018.04.26 打卡[LeetCode 87. Scramble String], Recursive<br>
+2018.04.26 打卡[LeetCode 114. Flatten Binary Tree to Linked List], Tree<br>
+2018.04.26 打卡[LeetCode 769. Max Chunks To Make Sorted], Array<br>
+2018.04.27 打卡[LeetCode 354. Russian Doll Envelopes], BinarySearch<br>
