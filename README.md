@@ -142,3 +142,4 @@
 2018.04.26 打卡[LeetCode 114. Flatten Binary Tree to Linked List], Tree<br>
 2018.04.26 打卡[LeetCode 769. Max Chunks To Make Sorted], Array<br>
 2018.04.27 打卡[LeetCode 354. Russian Doll Envelopes], BinarySearch<br>
+2018.05.03 打卡[LeetCode 821. Shortest Distance to a Character], N/A<br>
