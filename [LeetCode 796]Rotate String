@@ -1,0 +1,63 @@
+Description:
+We are given two strings, A and B.
+
+A shift on A consists of taking string A and moving the leftmost character to the rightmost position. For example, if A = 'abcde', then it will be 'bcdea' after one shift on A. Return True if and only if A can become B after some number of shifts on A.
+
+Example 1:
+Input: A = 'abcde', B = 'cdeab'
+Output: true
+
+Example 2:
+Input: A = 'abcde', B = 'abced'
+Output: false
+Note:
+
+A and B will have length at most 100.
+
+Solution:
+简单的方法可以直接在A+A字符串里用自带的成员函数找是否存在B，
+我用了KMP的方法，模式串为B，原串为A+A，
+先对模式串B构建next数组，就是每个位置的最长相同前缀和后缀，然后next数组记录前缀最后一个字符的位置，这样在匹配的时候可以减少需要匹配的字符，
+求next数组用的是一种回溯的方式，不断向前回溯k，首先在next[i-1]的也就是当前k值的基础往后拓展，发现不一样，则k回溯为next[k]，直到回到起点，
+然后匹配的过程与求next数组的方法基本类似，也是当失配时需要将模式串的位置指针回溯到合适的位置即next[k]直到后位匹配成功
+
+Code:
+class Solution {
+public:
+    bool rotateString(string A, string B) {
+        if (A.length() != B.length()) {
+            return false;
+        }
+        if (A.length() == 0 && B.length() == 0) {
+            return true;
+        }
+        
+        string newA = A + A;
+        vector<int> next(B.length(), 0);
+        next[0] = -1;
+        int k = -1;
+        for (int i = 1; i < B.length(); i ++) {
+            while(k > -1 && B[k + 1] != B[i]) {
+                k = next[k];
+            }
+            if (B[k + 1] == B[i]) {
+                k = k + 1;
+            }
+            next[i] = k;
+        }
+        
+        k = -1;
+        for (int i = 0; i < newA.length(); i ++) {
+            while(k > -1 && newA[i] != B[k + 1]) {
+                k = next[k];
+            }
+            if (newA[i] == B[k + 1]) {
+                k = k + 1;
+            }
+            if (k == B.length() - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
