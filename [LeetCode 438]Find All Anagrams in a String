@@ -1,0 +1,122 @@
+Description:
+Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+
+Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100.
+
+The order of output does not matter.
+
+Example 1:
+
+Input:
+s: "cbaebabacd" p: "abc"
+
+Output:
+[0, 6]
+
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+Example 2:
+
+Input:
+s: "abab" p: "ab"
+
+Output:
+[0, 1, 2]
+
+Explanation:
+The substring with start index = 0 is "ab", which is an anagram of "ab".
+The substring with start index = 1 is "ba", which is an anagram of "ab".
+The substring with start index = 2 is "ab", which is an anagram of "ab".
+
+Solution:
+题意大意为在原串中找一个模式串的变种，即只要字符个数一样就行。
+朴素想法为O(mn)，就是维护一个字符记录map，滑动窗口，增加尾部删除头部，与模式串匹配。
+O(n)的算法，滑动窗口，两个指针left和right，和一个count表示当前模式串里有多少个字符还未匹配成功
+首先得到一个模式串对应的字符计数map，
+在right指针在原串不断右滑的时候，如果字符对应计数map>=1，则--，并且表示一个字符匹配成功，count--，如果对应计数map<1则表示未匹配上，是多余字符，
+当count==0时表示所有字符都已匹配成功，push left，
+当window窗口长度大于模式串长度时，将left指针对应的字符重置，如果对应字符map计数>=0，则count++，因为该字符本来匹配成功了，需要重置，字符对应计数map++，
+left到达位置后退出循环。
+
+这个count的计数器还可以用一个mask来表示，每一位代表某个字符是否已经“全部”匹配成功，跟count的“每个”字符（可以是重复）是否匹配成功的count有些许不同
+
+Code:
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        vector<int> res;
+        if (s.length() == 0 || p.length() == 0 || s.length() < p.length()) return res;
+        vector<int> dic(26, 0);
+        for (auto ch : p) {
+            dic[ch - 'a'] ++;
+        }
+        
+        int left = 0, right = 0, count = p.length();
+        while (left <= s.length() - p.length()) {
+            if (dic[s[right] - 'a'] >= 1) {
+                count--;
+            }
+            dic[s[right] - 'a'] --;
+            right ++;
+            
+            if (count == 0) res.push_back(left);
+            
+            if (right - left == p.length()) {
+                if (dic[s[left] - 'a'] >= 0) {
+                    count ++;   
+                }
+                dic[s[left] - 'a'] ++;
+                left ++;
+            }
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> findAnagrams(string s, string p) {
+        int m[26] = {0};
+        int mask = 0;
+        vector<int> res;
+        // 初始状态，m记录p中字符各个个数
+        for(int i =0; i< p.length(); i++)
+        {
+          m[p[i]-'a']++;
+          mask |= 1 << (p[i]-'a');
+        }
+
+        // 长度
+        int n = p.length();
+
+        // 从头遍历
+        for(int i = 0; i < s.length(); i++)
+        {
+          // 长度大于n，则把最前面一个元素对应的hash++，
+          if(i>=n)
+          {
+            // 如果加了之后为非零，则还不满足，把对应mask位置为1
+            if(++m[s[i-n]-'a'])
+              mask |= 1 << (s[i-n]-'a');
+            // 如果加了之后变为0则，则说明现在的window里，字符个数满足条件，对应mask位置为0
+            else
+              mask &= ~(1 << (s[i-n]-'a'));
+          }
+
+          // 考虑当前位置的字符，对应hash--，表示有一个进行匹配
+          // 如果--之后变为非零，则依然不满足，对应mask置为1
+          if(--m[s[i]-'a'])
+            mask |= 1 << (s[i]-'a');
+          // 如果--之后变为0，则说明现在的window里，字符个数满足条件，对应mask位置为0
+          else
+            mask &= ~(1 << (s[i]-'a'));
+
+          // 如果mask所有位均为0,则表示满足
+          if(!mask)
+            res.push_back(i-n+1);
+        }
+        return res;
+    }
+};
