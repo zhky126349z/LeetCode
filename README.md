@@ -146,4 +146,5 @@
 2018.05.07 打卡[LeetCode 796. Rotate String], KMP<br>
 2018.05.09 打卡[LeetCode 438. Find All Anagrams in a String], String<br>
 2018.05.10 打卡[LeetCode 119. Pascal's Triangle II], Array<br>
+2018.05.10 打卡[LeetCode 343. Integer Break], N/A/DP<br>
 2018.05.11 打卡[LeetCode 605. Can Place Flowers], Array<br>
