@@ -1,0 +1,72 @@
+Description:
+There is a box protected by a password. The password is n digits, where each letter can be one of the first k digits 0, 1, ..., k-1.
+
+You can keep inputting the password, the password will automatically be matched against the last n digits entered.
+
+For example, assuming the password is "345", I can open it when I type "012345", but I enter a total of 6 digits.
+
+Please return any string of minimum length that is guaranteed to open the box after the entire string is inputted.
+
+Example 1:
+Input: n = 1, k = 2
+Output: "01"
+Note: "10" will be accepted too.
+Example 2:
+Input: n = 2, k = 2
+Output: "00110"
+Note: "01100", "10011", "11001" will be accepted too.
+Note:
+n will be in the range [1, 4].
+k will be in the range [1, 10].
+k^n will be at most 4096.
+
+Solution:
+一开始是想像AC自动机那样，构建一个字典树之后，构建一个fail指针，然后就是找到遍历所有叶子结点的最短路径，发现复杂度比较高，并且无法记忆化，
+这种想法是考虑是否每次都使用后n-1个元素作为后一个子序列的前n-1个元素，一定能构造出序列，我这里是假设不行，所以考虑的情况变得很多。
+最后发现这个问题其实是，德布鲁因序列问题，
+把每种序列作为一个结点，总共有n^k个结点，结点之间按照规则连接，
+这时候问题转化为找一个n阶图中的哈密尔顿回路，进而可以转化为n-1阶图中的欧拉回路问题，前提是知道这个图一定是一个欧拉图，
+这里使用的算法是属于贪心的一种算法，直接DFS，每次用前一个序列的后n-1位作为后一个序列的前n-1位，补充一位之后继续搜索，
+用一个set来记忆化，避免出现重复的序列。
+
+Code:
+class Solution {
+    
+public:
+    string crackSafe(int n, int k) {
+        unordered_set<string> visited;
+        int num = pow(k, n);
+        string str(n, '0');
+        visited.insert(str);
+        helper(visited, str, num, k, n);
+        return str;
+    }
+
+private:
+    
+    bool helper(unordered_set<string>& visited, string& str, int num, int k, int n) {
+        if (visited.size() == num) {
+            return true;
+        }
+        // length = n - 1
+        string now = str.substr(str.length() - n + 1, n - 1);
+        
+        for (int i = 0; i < k; i ++) {
+            now.push_back('0' + i);
+            if (visited.find(now) == visited.end()) {
+                str.push_back('0' + i);
+                visited.insert(now);
+                if (helper(visited, str, num, k, n)) {
+                    return true;
+                }
+                visited.erase(now);
+                str.pop_back(); 
+            }
+            
+            now.pop_back();
+        }
+        
+        return false;
+    }
+
+};
