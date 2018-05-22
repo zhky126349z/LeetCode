@@ -152,4 +152,4 @@
 2018.05.14 打卡[LeetCode 48. Rotate Image], Matrix<br>
 2018.05.14 打卡[LeetCode 374. Guess Number Higher or Lower], BinarySearch<br>
 2018.05.21 打卡[LeetCode 753. Cracking the Safe], DFS<br>
-2018.05.22 打卡[LeetCode 80. Remove Duplicates from Sorted Array II], N/A<br>
+2018.05.22 打卡[LeetCode 80. Remove Duplicates from Sorted Array II], Array<br>
