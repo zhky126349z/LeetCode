@@ -1,0 +1,43 @@
+Description:
+Given an 2D board, count how many battleships are in it. The battleships are represented with 'X's, empty slots are represented with '.'s. You may assume the following rules:
+You receive a valid board, made of only battleships or empty slots.
+Battleships can only be placed horizontally or vertically. In other words, they can only be made of the shape 1xN (1 row, N columns) or Nx1 (N rows, 1 column), where N can be of any size.
+At least one horizontal or vertical cell separates between two battleships - there are no adjacent battleships.
+Example:
+X..X
+...X
+...X
+In the above board there are 2 battleships.
+Invalid Example:
+...X
+XXXX
+...X
+This is an invalid board that you will not receive - as battleships will always have a cell separating between them.
+Follow up:
+Could you do it in one-pass, using only O(1) extra memory and without modifying the value of the board?
+
+Solution:
+数有多少段连续的X（横或竖），要求在O(1)的空间复杂度和O(n)的时间复杂度。
+自然想到当我顺序遍历的时候，如果某一格是X，且左边和上边不是X，则他肯定是一个新的连续段的开始，此时记录。
+如果某一格是X，且左边或上边的X，表示该连续段肯定已经被计数过了。
+
+Code:
+class Solution {
+public:
+    int countBattleships(vector<vector<char>>& board) {
+        int n = board.size();
+        if (n == 0) return 0;
+        int m = board[0].size();
+        int cnt = 0;
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < m; j ++) {
+                if (board[i][j] == 'X' &&
+                   (i - 1 < 0 || board[i - 1][j] == '.') &&
+                   (j - 1 < 0 || board[i][j - 1] == '.')) {
+                    cnt ++;
+                }
+            }
+        }
+        return cnt;
+    }
+};
