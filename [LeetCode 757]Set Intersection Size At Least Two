@@ -1,0 +1,134 @@
+Description:
+An integer interval [a, b] (for integers a < b) is a set of all consecutive integers from a to b, including a and b.
+
+Find the minimum size of a set S such that for every integer interval A in intervals, the intersection of S with A has size at least 2.
+
+Example 1:
+Input: intervals = [[1, 3], [1, 4], [2, 5], [3, 5]]
+Output: 3
+Explanation:
+Consider the set S = {2, 3, 4}.  For each interval, there are at least 2 elements from S in the interval.
+Also, there isn't a smaller size set that fulfills the above condition.
+Thus, we output the size of this set, which is 3.
+Example 2:
+Input: intervals = [[1, 2], [2, 3], [2, 4], [4, 5]]
+Output: 5
+Explanation:
+An example of a minimum sized set is {1, 2, 3, 4, 5}.
+Note:
+
+intervals will have length in range [1, 3000].
+intervals[i] will have length 2, representing some integer interval.
+intervals[i][j] will be an integer in [0, 10^8].
+
+Solution:
+区间问题一般要先排序，按start排或者按end排，
+核心思想是贪心，维护两个最大值，每次考虑一个新的区间I，如果之前已有的minium set无法满足I，则需要在已有的minium set中再加入一个或两个数，
+而因为我们的区间是排序过的，所以每次取区间I的最大两个数（或一个），可以保证这两个数满足之后区间的概率最大。
+然而如果按start排序的话，因为end的长短不一，而我们这里是要取最大的两个数，排过之后很有可能出现各种复杂的情况，比较难处理。
+所以考虑按end排序，就只需要考虑3种情况。
+（1）已由两个最大值都在区间内
+（2）最大值在区间内
+（3）都不在区间内
+分别处理。这里注意，排序的时候当end相同时，应优先处理start较大的区间，因为end相同时，满足start较大的区间的数一定可以满足start较小的区间。
+
+Code:
+class Solution {
+    
+    private:
+        static bool cmp(vector<int>& a, vector<int>& b) {
+            if (a[1] < b[1]) return true;
+            if (a[1] == b[1] && a[0] > b[0]) return true;
+            return false;
+        }
+    
+    public:
+        int intersectionSizeTwo(vector<vector<int>>& intervals) {
+            int res = 0;
+            int n2 = -1;
+            int n1 = -1;
+            sort(intervals.begin(), intervals.end(), cmp);
+            for (auto interval : intervals) {
+                int s = interval[0];
+                int e = interval[1];
+                bool isN1in = (s <= n1);
+                bool isN2in = (s <= n2);
+                if (isN1in && isN2in) continue;
+                res += (isN2in ? 1 : 2);
+                n1 = (isN2in ? n2 : e - 1);
+                n2 = e;
+            }
+            return res;
+        }
+
+// private:
+//     static bool cmp(vector<int>& a, vector<int>& b) {
+//         if (a[0] < b[0]) return true;
+//         if (a[0] == b[0] && a[1] <= b[1]) return true;
+//         return false;
+//     }
+    
+// public:
+//     int intersectionSizeTwo(vector<vector<int>>& intervals) {
+//         int res = 0;
+//         int n1 = 0;
+//         int n2 = 0;
+//         sort(intervals.begin(), intervals.end(), cmp);
+//         for (auto interval : intervals) {
+//             int s = interval[0];
+//             int e = interval[1];
+//             if (n1 == 0 && n2 == 0) {
+//                 n1 = e - 1;
+//                 n2 = e;
+//                 res += 2;
+//                 continue;
+//             }
+            
+//             if (s <= n1 && n2 <= e) {
+//                 continue;
+//             }
+            
+//             if (n1 < s && s <= n2 && n2 <= e) {
+//                 n1 = (n2 == e ? e - 1 : n2);
+//                 n2 = e;
+//                 res += 1;
+//                 continue;
+//             }
+            
+//             if (n2 == s) {
+//                 n1 = n2;
+//                 n2 = e;
+//                 res += 1;
+//                 continue;
+//             }
+            
+//             if (n2 < s) {
+//                 n1 = e - 1;
+//                 n2 = e;
+//                 res += 2;
+//                 continue;
+//             }
+            
+//             if (s <= n1 && n1 <= e && e < n2) {
+//                 n1 = (n1 == e ? e - 1 : n1);
+//                 n2 = e;
+//                 continue;
+//             }
+            
+//             if (e <= n1) {
+//                 n1 = e - 1;
+//                 n2 = e;
+//                 continue;
+//             }
+            
+//             if (n1 < s && e < n2) {
+//                 n1 = e - 1;
+//                 n2 = e;
+//                 res += 1;
+//                 continue;
+//             }
+            
+//         }
+//         return res;
+//     }
+};
