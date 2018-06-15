@@ -1,0 +1,75 @@
+Description:
+A binary watch has 4 LEDs on the top which represent the hours (0-11), and the 6 LEDs on the bottom represent the minutes (0-59).
+
+Each LED represents a zero or one, with the least significant bit on the right.
+
+
+For example, the above binary watch reads "3:25".
+
+Given a non-negative integer n which represents the number of LEDs that are currently on, return all possible times the watch could represent.
+
+Example:
+
+Input: n = 1
+Return: ["1:00", "2:00", "4:00", "8:00", "0:01", "0:02", "0:04", "0:08", "0:16", "0:32"]
+Note:
+The order of output does not matter.
+The hour must not contain a leading zero, for example "01:00" is not valid, it should be "1:00".
+The minute must be consist of two digits and may contain a leading zero, for example "10:2" is not valid, it should be "10:02".
+
+Solution:
+一个简单的backtrack。
+还有一种思路，用bitset<10>这个STL，有自带计数count，把所有时间遍历一遍，符合的就加入result中，学到了一个新的容器
+
+Code:
+class Solution {
+public:
+    vector<string> readBinaryWatch(int num) {
+        vector<string> res;
+        string tmp = "0000000000";
+        helper(res, tmp, 0, 1, num);
+        return res;
+    }
+    
+    bool helper(vector<string> &res, string tmp, int curLoc, int curNum, int sumNum) {
+        if (curNum == sumNum + 1) {
+            string time = getTime(tmp);
+            if (time != "") {
+                res.push_back(time);
+            }
+            return true;
+        }
+        
+        for (int i = curLoc; i < 10 - (sumNum - curNum); i ++) {
+            tmp[i] = '1';
+            helper(res, tmp, i + 1, curNum + 1, sumNum);
+            tmp[i] = '0';
+        }
+        
+        return true;
+    }
+    
+    string getTime(string tmp) {
+        string time = "";
+        int hour = 0;
+        int minute = 0;
+        for (int i = 0; i < 6; i ++) {
+            minute += pow(2, i) * (tmp[i] - '0');
+        }
+        for (int i = 6; i < 10; i ++) {
+            hour += pow(2, i - 6) * (tmp[i] - '0');
+        }
+        if (hour > 11 || minute > 59) {
+            return time;
+        }
+        time = time + to_string(hour) + ":";
+        if (minute < 10) {
+            time = time + "0" + to_string(minute);
+        } else {
+            time = time + to_string(minute);
+        }
+        
+        return time;
+    }
+    
+};
