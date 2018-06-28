@@ -1,0 +1,69 @@
+Description:
+Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
+
+Integers in each row are sorted from left to right.
+The first integer of each row is greater than the last integer of the previous row.
+Example 1:
+
+Input:
+matrix = [
+  [1,   3,  5,  7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+target = 3
+Output: true
+Example 2:
+
+Input:
+matrix = [
+  [1,   3,  5,  7],
+  [10, 11, 16, 20],
+  [23, 30, 34, 50]
+]
+target = 13
+Output: false
+Solution:
+普通的二分查找，先确定在哪一行，然后确定哪一列，时间复杂度O(log(m) + log(n))
+来，我们看一下这个二分里到底犯了多少错误。
+1. 置end的时候忘记定为n-1而定为了n，太低级了
+2. 内部数组的size没有判断，太低级了
+3. 比较的时候又又又又又又又又又又又直接拿index比较了，你的值呢？？？每次错了才知道用值
+4. 想要比对结束后把end置为最大的比target小的值，他比第0行第1个元素还小，你怎么不判断？？？？这都没考虑到吗？？？
+5. 二分查找的终止条件和内部转移又迷的不知道怎么写，以后写一个例子自己跑一跑
+
+Code:
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int n = matrix.size();
+        if (n == 0) return false;
+        int m = matrix[0].size();
+        if (m == 0) return false;
+        int st = 0, ed = n - 1, mid;
+        while (st <= ed) {
+            mid = st + (ed - st) / 2;
+            if (matrix[mid][0] == target) {
+                return true;
+            } else if (matrix[mid][0] < target) {
+                st = mid + 1;
+            } else {
+                ed = mid - 1;
+            }
+        }
+        n = ed >= 0 ? ed : 0;
+        st = 0, ed = m - 1;
+        while (st <= ed) {
+            mid = st + (ed - st) / 2;
+            if (matrix[n][mid] == target) {
+                return true;
+            } else if (matrix[n][mid] < target) {
+                st = mid + 1;
+            } else {
+                ed = mid - 1;
+            }
+        }
+        
+        return false;
+    }
+};
