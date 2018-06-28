@@ -158,3 +158,5 @@
 2018.06.11 打卡[LeetCode 567. Permutation in String], String<br>
 2018.06.14 打卡[LeetCode 401. Binary Watch], DFS<br>
 2018.06.14 打卡[LeetCode 804. Unique Morse Code Words], N/A<br>
+2018.06.28 打卡[LeetCode 74. Search a 2D Matrix], BinarySearch<br>
+2018.06.28 打卡[LeetCode 240. Search a 2D Matrix II], BinarySearch<br>
