@@ -1,0 +1,65 @@
+Description:
+A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+
+Return a deep copy of the list.
+
+Solution:
+deep copy一个带有随机pointer的链表，
+遍历两遍，第一遍把所有old和new结点map住，然后把new结点的主链贯通
+第二遍把new结点对应old结点的random pointer指向的old结点所对应的new结点赋给new结点的random pointer。
+时间复杂度O(n),空间复杂度O(n)，因为多开了一个map去映射。
+可以直接再old链中每个结点之后插入一个new结点，这样每一个old结点的next就是new结点，节省空间完成映射
+
+Code:
+/**
+ * Definition for singly-linked list with a random pointer.
+ * struct RandomListNode {
+ *     int label;
+ *     RandomListNode *next, *random;
+ *     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        if (head == NULL) {
+            return NULL;
+        }
+        
+        unordered_map<RandomListNode*, RandomListNode*> nodeMap;
+        RandomListNode *newHead = new RandomListNode(-1);
+        RandomListNode *curNewNode = newHead;
+        RandomListNode *curOldNode = head;
+        
+        while(curOldNode) {
+            curNewNode->label = curOldNode->label;
+            nodeMap[curOldNode] = curNewNode;
+            if (curOldNode->next) {
+                RandomListNode *newNode = new RandomListNode(-1);
+                curNewNode->next = newNode;
+                curNewNode = curNewNode->next;
+                curOldNode = curOldNode->next;
+            } else {
+                curNewNode->next = NULL;
+                curOldNode = curOldNode->next;
+            }
+        }
+        
+        curOldNode = head;
+        curNewNode = newHead;
+        
+        while(curOldNode) {
+            if (curOldNode->random) {
+                curNewNode->random = nodeMap[curOldNode->random];
+            } else {
+                curNewNode->random = NULL;
+            }
+            curOldNode = curOldNode->next;
+            curNewNode = curNewNode->next;
+        }
+        
+        
+        return newHead;
+    }
+};
+
