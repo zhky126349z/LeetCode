@@ -161,3 +161,4 @@
 2018.06.28 打卡[LeetCode 74. Search a 2D Matrix], BinarySearch<br>
 2018.06.28 打卡[LeetCode 240. Search a 2D Matrix II], BinarySearch<br>
 2018.07.17 打卡[LeetCode 138. Copy List with Random Pointer], LinkedList<br>
+2018.07.30 打卡[LeetCode 139. Word Break], DP<br>
