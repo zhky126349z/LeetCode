@@ -1,0 +1,84 @@
+Description:
+In a 2D grid of 0s and 1s, we change at most one 0 to a 1.
+
+After, what is the size of the largest island? (An island is a 4-directionally connected group of 1s).
+
+Example 1:
+
+Input: [[1, 0], [0, 1]]
+Output: 3
+Explanation: Change one 0 to 1 and connect two 1s, then we get an island with area = 3.
+Example 2:
+
+Input: [[1, 1], [1, 0]]
+Output: 4
+Explanation: Change the 0 to 1 and make the island bigger, only one island with area = 4.
+Example 3:
+
+Input: [[1, 1], [1, 1]]
+Output: 4
+Explanation: Can't change any 0 to 1, only one island with area = 4.
+
+Solution:
+思路比较简单，第一遍先bfs处理一下所有独立的island，给每片island标号，
+然后第二遍遍历所有的0位置，计算上下左右四个方向的island加起来的面积，注意不能重复计算。
+感觉复杂度应该没那么高啊，跑的时间好久……
+
+Code:
+class Solution {
+public:
+    int largestIsland(vector<vector<int>>& grid) {
+        int n, m, result = 0, cnt = 0;
+        if ((n = grid.size()) == 0) return 0;
+        if ((m = grid[0].size()) == 0) return 0;
+        vector<vector<int>> gridDivide(grid.size(), vector<int>(grid[0].size(), 0));
+        vector<int> divideNums;
+        divideNums.push_back(0);
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < m; j ++) {
+                if (grid[i][j] == 1 && gridDivide[i][j] == 0) {
+                    cnt ++;
+                    divideNums.push_back(search(grid, gridDivide, i, j, n, m, cnt));
+                    result = max(result, divideNums[cnt]);
+                }
+            }
+        }
+
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < m; j ++) {
+                if (grid[i][j] == 0) {
+                    set<int> cals;
+                    int temp = 1;
+                    if (i - 1 >= 0) cals.insert(gridDivide[i - 1][j]);
+                    if (i + 1 < n) cals.insert(gridDivide[i + 1][j]);
+                    if (j - 1 >= 0) cals.insert(gridDivide[i][j - 1]);
+                    if (j + 1 < m) cals.insert(gridDivide[i][j + 1]);
+                    for (auto cal : cals) {
+                        temp += divideNums[cal];
+                    }
+                    result = max(result, temp);
+                }
+            }
+        }
+        
+        return result;
+    }
+    int search(vector<vector<int>> grid, vector<vector<int>>& gridDivide, int i, int j, int n, int m, int num) {
+        int result = 0;
+        result ++;
+        gridDivide[i][j] = num;
+        if (i - 1 >= 0 && gridDivide[i - 1][j] == 0 && grid[i - 1][j] == 1) {
+            result += search(grid, gridDivide, i - 1, j, n, m, num);
+        }
+        if (i + 1 < n && gridDivide[i + 1][j] == 0 && grid[i + 1][j] == 1) {
+            result += search(grid, gridDivide, i + 1, j, n, m, num);
+        }
+        if (j - 1 >= 0 && gridDivide[i][j - 1] == 0 && grid[i][j - 1] == 1) {
+            result += search(grid, gridDivide, i, j - 1, n, m, num);
+        }
+        if (j + 1 < m && gridDivide[i][j + 1] == 0 && grid[i][j + 1] == 1) {
+            result += search(grid, gridDivide, i, j + 1, n, m, num);
+        }
+        return result;
+    }
+};
