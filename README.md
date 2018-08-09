@@ -165,3 +165,4 @@
 2018.08.05 打卡[LeetCode 827. Making A Large Island], BFS<br>
 2018.08.07 打卡[LeetCode 728. Self Dividing Numbers], N/A<br>
 2018.08.09 打卡[LeetCode 864. Shortest Path to Get All Keys], BFS<br>
+2018.08.09 打卡[LeetCode 66. Plus One], N/A<br>
