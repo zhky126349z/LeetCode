@@ -1,0 +1,105 @@
+Description:
+We are given a 2-dimensional grid. "." is an empty cell, "#" is a wall, "@" is the starting point, ("a", "b", ...) are keys, and ("A", "B", ...) are locks.
+
+We start at the starting point, and one move consists of walking one space in one of the 4 cardinal directions.  We cannot walk outside the grid, or walk into a wall.  If we walk over a key, we pick it up.  We can't walk over a lock unless we have the corresponding key.
+
+For some 1 <= K <= 6, there is exactly one lowercase and one uppercase letter of the first K letters of the English alphabet in the grid.  This means that there is exactly one key for each lock, and one lock for each key; and also that the letters used to represent the keys and locks were chosen in the same order as the English alphabet.
+
+Return the lowest number of moves to acquire all keys.  If it's impossible, return -1.
+
+ 
+
+Example 1:
+
+Input: ["@.a.#","###.#","b.A.B"]
+Output: 8
+Example 2:
+
+Input: ["@..aA","..B#.","....b"]
+Output: 6
+
+Solution:
+一开始是想到可以用搜索做的，但是觉得DFS和BFS觉得都会搜暴，因为本题可以走回头路，所以状态肯定会爆炸，
+然后想是否可以用trick方法，比如计算到每个key的最短可移动距离，然后得到一个拿key的顺序，最后得到最短步数，但是起始点是变化的，而且可以举出反例先后顺序无法直接判定得到，
+然后又想是否可以对搜索剪枝，一开始想的是是否有A*类似指导移动，发现无法设置启发式函数，
+看了discuss之后，
+还是需要一个visit做访问控制，问题是每个格子不是必然只会访问一次的，
+那就需要更多的状态来做访问控制，而不是r,c指向某一格，
+这里还有一个状态是当前拥有的keys，因为最多6把所以可以用int位来表示，
+观察：如果你在r,c格拥有keys的状态访问过，那下次如果还是这个状态过来，同样的状态已经计算过了，steps肯定会更多，可以直接剪掉。
+所以用[r][c][keys]三个状态，做访问控制，然后对整个grid做bfs
+
+Code:
+class Solution {
+
+private:
+    struct Move {
+        int r, c, s, k;
+        Move(int row, int col, int step, int keys) {r = row; c = col; s = step; k = keys;}
+    };
+
+public:
+    int shortestPathAllKeys(vector<string>& grid) {
+        int n, m;
+        if ((n = grid.size()) == 0) return -1;
+        if ((m = grid[0].size()) == 0) return -1; 
+        int startx = -1, starty = -1;
+        int res;
+        int keySum = 0;
+        int allKeys = 0;
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < m; j ++) {
+                if (grid[i][j] == '@') {
+                    startx = i;
+                    starty = j;
+                } else if (grid[i][j] >= 'a' && grid[i][j] <= 'f') {
+                    allKeys = allKeys | (1 << grid[i][j] - 'a');
+                }
+            }
+        }
+        if (startx == -1 || starty == -1) return -1;
+        return bfsHelper(grid, n, m, startx, starty, allKeys);
+    }
+
+    int bfsHelper(vector<string>& grid, int n, int m, int r, int c, int allKeys) {
+        int dirr[4] = {-1, 1, 0, 0};
+        int dirc[4] = {0, 0, -1, 1};
+        int curr, curc, curs, curk;
+        queue<Move> bfs;
+        vector<vector<vector<bool>>> visit(n, vector<vector<bool>>(m, vector<bool>(64, false)));
+        bfs.push(Move(r, c, 0, 0));
+        visit[r][c][0] = true;
+        while(!bfs.empty()) {
+            Move move = bfs.front();
+            curr = move.r;
+            curc = move.c;
+            curs = move.s;
+            curk = move.k;
+            bfs.pop();
+
+            int nexts = curs + 1;
+            for (int i = 0; i < 4; i ++) {
+                int nextr = curr + dirr[i];
+                int nextc = curc + dirc[i];
+                int nextk = curk;
+                if (nextr < 0 || nextr >= n || nextc < 0 || nextc >= m) continue;
+                char nextGrid = grid[nextr][nextc];
+                if (nextGrid == '#') {
+                    continue;
+                } else if (nextGrid >= 'a' && nextGrid <= 'f') {
+                    nextk = nextk | (1 << nextGrid - 'a');
+                } else if (nextGrid >= 'A' && nextGrid <= 'F') {
+                    if (!(nextk & (1 << nextGrid - 'A'))) {
+                        continue;
+                    }
+                }
+                if (nextk == allKeys) return nexts;
+                if (!visit[nextr][nextc][nextk]) {
+                    bfs.push(Move(nextr, nextc, nexts, nextk));
+                    visit[nextr][nextc][nextk] = true;
+                }
+            }
+        }
+        return -1;
+    }
+};
