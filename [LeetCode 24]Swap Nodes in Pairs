@@ -1,0 +1,48 @@
+Description:
+Given a linked list, swap every two adjacent nodes and return its head.
+
+Example:
+
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+Note:
+
+Your algorithm should use only constant extra space.
+You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+Solution:
+这种如果头或者尾需要特判直接在前面或者后面补一个结点，
+记得各种情况判断是否为null
+
+Code:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if (head == NULL) return head;
+        ListNode* addHead = new ListNode(-1);
+        addHead->next = head;
+        ListNode* pre = addHead;
+        ListNode* cur = head;
+        ListNode* nex = head->next;
+        while(pre && cur && nex) {
+            pre->next = nex;
+            cur->next = nex->next;
+            nex->next = cur;
+            if (cur->next == NULL || cur->next->next == NULL) {
+                break;
+            }
+            pre = cur;
+            cur = cur->next;
+            nex = cur->next;
+        }
+        return addHead->next;
+    }
+
+};
