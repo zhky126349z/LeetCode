@@ -1,0 +1,89 @@
+Description:
+Sort a linked list in O(n log n) time using constant space complexity.
+
+Example 1:
+
+Input: 4->2->1->3
+Output: 1->2->3->4
+Example 2:
+
+Input: -1->5->3->4->0
+Output: -1->0->3->4->5
+
+Solution:
+一开始想直接写链表的快排，但是快排因为最坏情况的时间复杂度会达到O(n^2)所以超时了，
+考虑使用归并排序，可以在不使用额外空间的情况下，任何情况都是O(nlogn),
+快慢指针，记得快指针初始时指向第二个元素，
+归并分三步，先拆开，子序列sort，归并，是一个递归的过程。
+并且，合并两部分子序列的时候，也可以使用递归的方法来进行合并。
+说到底，归并就是不断拆分序列直到单个元素，然后跳回上一层把已经sorted的序列进行归并，最后得到整个都sorted的序列。
+
+Code:
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        return mergeSort(head);
+        //return qsort(head, NULL);
+    }
+
+    ListNode* mergeSort(ListNode* head) {
+        if (head == NULL || head->next == NULL) return head;
+        ListNode* fast = head->next;
+        ListNode* slow = head;
+
+        // split
+        while(fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        fast = slow->next;
+        slow->next = NULL;
+        
+        // sort sub
+        slow = mergeSort(head);
+        fast = mergeSort(fast);
+
+        // merge
+        return merge(slow, fast);
+    }
+
+    ListNode* merge(ListNode* fir, ListNode* sec) {
+        ListNode* node;
+        if (fir == NULL) return sec;
+        if (sec == NULL) return fir;
+        
+        if (fir->val < sec->val) {
+            node = fir;
+            node->next = merge(fir->next, sec);
+        } else {
+            node = sec;
+            node->next = merge(fir, sec->next);
+        }
+        return node;
+    }
+
+    // ListNode* qsort(ListNode* head, ListNode* end) {
+    //     if (head == NULL) return NULL;
+    //     if (head->next == NULL || head == end || head->next == end) return head;
+
+    //     int key = head->val;
+    //     ListNode* node = head;
+    //     ListNode* left = head;
+    //     ListNode* mid = head;
+    //     while(node->next) {
+    //         if (node->next == end) break;
+    //         if (node->next->val < key) {
+    //             ListNode* temp = node->next;
+    //             node->next = node->next->next;
+    //             temp->next = left;
+    //             left = temp;
+    //             continue;
+    //         }
+    //         node = node->next;
+    //     }
+    //     if (mid->next != NULL) {
+    //         mid->next = qsort(mid->next, NULL);
+    //     }
+    //     return qsort(left, mid);
+    // }
+};
