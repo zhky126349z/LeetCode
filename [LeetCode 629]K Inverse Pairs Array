@@ -1,0 +1,46 @@
+Description:
+Given two integers n and k, find how many different arrays consist of numbers from 1 to n such that there are exactly k inverse pairs.
+
+We define an inverse pair as following: For ith and jth element in the array, if i < j and a[i] > a[j] then it's an inverse pair; Otherwise, it's not.
+
+Since the answer may be very large, the answer should be modulo 109 + 7.
+
+Example 1:
+Input: n = 3, k = 0
+Output: 1
+Explanation: 
+Only the array [1,2,3] which consists of numbers from 1 to 3 has exactly 0 inverse pair.
+Example 2:
+Input: n = 3, k = 1
+Output: 2
+Explanation: 
+The array [1,3,2] and [2,1,3] have exactly 1 inverse pair.
+Note:
+The integer n is in the range [1, 1000] and k is in the range [0, 1000].
+
+Solution:
+直觉上来说感觉是dp问题，大问题可以划分为子问题来解决。
+主要思想是一个长度为n的有k给逆序对的数列，再加一个数n+1，逆序对只会增加不会减少，增加的数量视n+1数插入的位置而定，
+插入在第一位增加n个逆序对，插入在最后一位增加0给逆序对。
+所以可得用dp[n][k]表示长度为n，有k个逆序对的数列，
+那么dp[n][k] = dp[n - 1][k - n] + dp[n - 1][k - (n - 1)] + ... + dp[n - 1][k]
+            = dp[n][k - 1] - dp[n - 1][k - n] + dp[n - 1][k]
+这里有个取模的问题，因为化简后包含减法，所以减了之后判断一下是否为负数，如果为负补偿的加上一个mod
+
+Code:
+class Solution {
+public:
+    int kInversePairs(int n, int k) {
+        if (k > n * (n - 1) / 2) return 0;
+        if (n < 1) return 0;
+        int mod = 1000000007;
+        vector<vector<long>> dp(n + 1, vector<long>(k + 1, 0));
+        dp[1][0] = 1;
+        for (int i = 2; i <= n; i ++) {
+            for (int j = 0; j <= min(k, n * (n - 1) / 2); j ++) {
+                dp[i][j] = (((j > 0 ? dp[i][j - 1] : 0) - (j >= i ? dp[i - 1][j - i] : 0) + mod) % mod + dp[i - 1][j]) % mod;
+            }
+        }
+        return dp[n][k] % mod;
+    }
+};
