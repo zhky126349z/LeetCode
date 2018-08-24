@@ -171,3 +171,4 @@
 2018.08.23 打卡[LeetCode 629. K Inverse Pairs Array], DP<br>
 2018.08.23 打卡[LeetCode 812. Largest Triangle Area], N/A<br>
 2018.08.24 打卡[LeetCode 554. Brick Wall], N/A<br>
+2018.08.24 打卡[LeetCode 131. Palindrome Partitioning], DPS<br>
