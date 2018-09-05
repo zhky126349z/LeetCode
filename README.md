@@ -172,3 +172,4 @@
 2018.08.23 打卡[LeetCode 812. Largest Triangle Area], N/A<br>
 2018.08.24 打卡[LeetCode 554. Brick Wall], N/A<br>
 2018.08.24 打卡[LeetCode 131. Palindrome Partitioning], DPS<br>
+2018.09.05 打卡[LeetCode 36. Valid Sudoku], N/A<br>
