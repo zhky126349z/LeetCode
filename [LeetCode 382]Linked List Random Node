@@ -1,0 +1,96 @@
+Description:
+Given a singly linked list, return a random node's value from the linked list. Each node must have the same probability of being chosen.
+
+Follow up:
+What if the linked list is extremely large and its length is unknown to you? Could you solve this efficiently without using extra space?
+
+Example:
+
+// Init a singly linked list [1,2,3].
+ListNode head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+Solution solution = new Solution(head);
+
+// getRandom() should return either 1, 2, or 3 randomly. Each element should have equal probability of returning.
+solution.getRandom();
+
+Solution:
+产生随机数，但是无法获得数列长度，使用Reservoir sampling
+参考https://en.wikipedia.org/wiki/Reservoir_sampling
+伪代码如下
+ReservoirSample(S[1..n], R[1..k])
+  // fill the reservoir array
+  for i = 1 to k
+      R[i] := S[i]
+
+  // replace elements with gradually decreasing probability
+  for i = k+1 to n
+    j := random(1, i)   // important: inclusive range
+    if j <= k
+        R[j] := S[i]
+        
+Keep the first ten items in memory.
+When the i-th item arrives (for {\displaystyle i>10} {\displaystyle i>10}):
+with probability {\displaystyle 10/i} {\displaystyle 10/i}, keep the new item (discard an old one, selecting which to replace at random, each with chance 1/10)
+with probability {\displaystyle 1-10/i} {\displaystyle 1-10/i}, keep the old items (ignore the new one)
+So:
+
+when there are 10 items or fewer, each is kept with probability 1;
+when there are 11 items, each of them is kept with probability 10/11; for the old items, that is (1)(1/11 + (10/11)(9/10)) = 1/11 + 9/11 = 10/11
+In other words, the 10 old items are kept either if the new one is not selected (1/11) or the new one is selected to replace one of the other 9 items (10/11)*(9/10), and since "or" is represented with addition, we derive (1/11 + (10/11)(9/10)).
+when there are 12 items, the twelfth item is kept with probability 10/12, and each of the previous 11 items are also kept with probability (10/11)(2/12 + (10/12)(9/10)) = (10/11)(11/12) = 10/12;
+by induction, it is easy to prove that when there are n items, each item is kept with probability 10/n.
+
+Code:
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+    
+private:
+    ListNode* head;
+    std::default_random_engine generator;
+    
+public:
+    /** @param head The linked list's head.
+        Note that the head is guaranteed to be not null, so it contains at least one node. */
+    Solution(ListNode* head) {
+        this->head = head;
+        this->generator = std::default_random_engine();
+    }
+    
+    /** Returns a random node's value. */
+    int getRandom() {
+        ListNode* p = head;
+        int k = 1;
+        int cnt = 0;
+        vector<int> res(k + 1, 0);
+        while(p) {
+            cnt ++;
+            if (cnt <= k) {
+                res[cnt] = p->val;
+            }
+            else {
+                std::uniform_int_distribution<> dis(1, cnt);
+                int ran = dis(generator);
+                if (ran <= k) {
+                    res[ran] = p->val;
+                }
+            }
+            p = p->next;
+        }
+        return res[k];
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(head);
+ * int param_1 = obj.getRandom();
+ */
