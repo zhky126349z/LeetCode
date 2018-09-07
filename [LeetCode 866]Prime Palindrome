@@ -1,0 +1,81 @@
+Description:
+Find the smallest prime palindrome greater than or equal to N.
+
+Recall that a number is prime if it's only divisors are 1 and itself, and it is greater than 1. 
+
+For example, 2,3,5,7,11 and 13 are primes.
+
+Recall that a number is a palindrome if it reads the same from left to right as it does from right to left. 
+
+For example, 12321 is a palindrome.
+
+Solution:
+题意是要找大于等于N的回文素数
+一开始想法是觉得如果去生成素数表，再去判断是否回文，虽然实现简单，但时间复杂度太高了肯定会爆，
+所以自然应该想到是否先生成回文，再去判断是否为素数，因为生成N位的回文，只需要遍历到sqrt(N)，时间复杂度足够，
+但是需要考虑生成回文是奇数个数字还是偶数个数字，生成方式些许不同，
+再之后可以发现，偶数个数字的回文数一定会被11整除，所以只需要考虑奇数个数字的回文数。另外N<=11时需要特判。
+最后，把一个字符转化成string，然后进行string的拼接，再转化为int，效率极低，
+最好自己实现一个回文字符的生成，leftpart去生成rightpart就行，奇数偶数的差别在于leftpart是否保留最后一位。N
+
+Code:
+class Solution {
+private:
+    // int evenPalindrome(int x) {
+    //     string str1 = to_string(x);
+    //     string str2 = str1;
+    //     reverse(str2.begin(), str2.end());
+    //     return stoi(str1 + str2);
+    // }
+
+    // int oddPalindrome(int x) {
+    //     string str1 = to_string(x);
+    //     string str2 = str1.substr(0, str1.length() - 1);
+    //     reverse(str2.begin(), str2.end());
+    //     return stoi(str1 + str2);
+    // }
+
+    int oddPalindrome(int leftPart) {
+        int ans = leftPart;
+        leftPart = leftPart / 10;
+        while(leftPart > 0) {
+            ans = ans * 10 + leftPart % 10;
+            leftPart = leftPart / 10;
+        }
+        return ans;
+    }
+
+    bool isPrime(int x) {
+        if (x == 1 || x == 0) return false;
+        for (int i = 2; i * i <= x; i ++) {
+            if (x % i == 0) return false;
+        }
+        return true;
+    }
+
+public:
+    int primePalindrome(int N) {
+        int odd = 1;
+        int even = 1;
+        int res = 0;
+        if (N <= 2) return 2;
+        if (N <= 3) return 3;
+        if (N <= 5) return 5;
+        if (N <= 7) return 7;
+        if (N <= 11) return 11;
+        while(true) {
+            int oddRes = oddPalindrome(odd);
+            //int evenRes = evenPalindrome(even);
+            //res = min(oddRes, evenRes);
+            odd++;
+            if (oddRes < N) continue;
+            if (isPrime(oddRes)) return oddRes;
+            // if (oddRes > evenRes) {
+            //     even++;
+            // }else {
+            //     odd++;
+            // }
+        }
+        return res;
+    }
+};
