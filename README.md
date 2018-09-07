@@ -175,3 +175,4 @@
 2018.09.05 打卡[LeetCode 36. Valid Sudoku], N/A<br>
 2018.09.06 打卡[LeetCode 382. Linked List Random Node], Probability<br>
 2018.09.06 打卡[LeetCode 599. Minimum Index Sum of Two Lists], HashMap<br>
+2018.09.07 打卡[LeetCode 866. Prime Palindrome], Prime<br>
