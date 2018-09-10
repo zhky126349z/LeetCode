@@ -177,3 +177,4 @@
 2018.09.06 打卡[LeetCode 599. Minimum Index Sum of Two Lists], HashMap<br>
 2018.09.07 打卡[LeetCode 866. Prime Palindrome], Prime<br>
 2018.09.07 打卡[LeetCode 833. Find And Replace in String], N/A<br>
+2018.09.10 打卡[LeetCode 520. Detect Capital], N/A<br>
