@@ -1,0 +1,110 @@
+Description:
+Define S = [s,n] as the string S which consists of n connected strings s. For example, ["abc", 3] ="abcabcabc".
+
+On the other hand, we define that string s1 can be obtained from string s2 if we can remove some characters from s2 such that it becomes s1. For example, “abc” can be obtained from “abdbec” based on our definition, but it can not be obtained from “acbbe”.
+
+You are given two non-empty strings s1 and s2 (each at most 100 characters long) and two integers 0 ≤ n1 ≤ 106 and 1 ≤ n2 ≤ 106. Now consider the strings S1 and S2, where S1=[s1,n1] and S2=[s2,n2]. Find the maximum integer M such that [S2,M] can be obtained from S1.
+
+Example:
+
+Input:
+s1="acb", n1=4
+s2="ab", n2=2
+
+Return:
+2
+
+Solution:
+首先一个事实，s2在S1中重复了n次的话，那么S2在S1中重复了n/n2次。
+我的思路是一开始也是找循环，简单说就是在x个s1中找到s2的结尾index的repeat index，即找s2结尾index和s1的某个index的再次同时出现。
+但是过于固定，没有想到循环不一定要一定到s2的结尾，所以很容易就超时。而且对于剩余的处理也有问题。
+其实思路跟正确思路很像了，记录前面的s1的个数对应的包含s2的个数，最后计算的时候直接把前面和后面的剩余部分一并算出来。
+
+怎么从上优化到最终算法
+1. 不一定要特定的s2结尾index和s1的某个index相同，可以是任意两个s2的i和s1的j的组合的重复出现，因此需要一个visit数组
+2. 问题可以抽象成，再一个链表里找环，形同一组数里找重复的数（快慢指针），这里因为可以直接记录，不需要那么麻烦
+
+解决思路1：
+以字符为精度进行查找，如果查到repeat circle则快速跳跃跳到最后，顺序处理最后的parts，处理方法都是正常处理
+1. 找s2结尾index和s1某个index的特定组合的重复出现
+2. 第一次出现记录组合
+3. 第二次出现之前，遍历char正常计算count数量
+4. 第二次出现，出现循环，计算剩下的字符串长度里总共还能出现几次完整的循环，然后跳跃过后继续正常计算
+得到结果
+
+解决思路2：
+以s1整个为精度进行查找，确定在当前s1字符串结束后需要寻找的下个s2的字符，当出现重复时则证明出现循环，
+根据鸽笼原理，最多s2.size()个s1字符串之后，必然会出现重复。出现repeat circle之后，分成三部分计算，初始，重复部分，剩余部分。
+每个s2的字符第一次出现的时候是在第几个s1字符串的下个查找目标，即为nextIndex[k] = i，表示s2中第k个字符第一次出现是在第i个s1字符串的下个查找目标
+nextIndex[0] = 0，s1的count从第一个开始，多设置一个头便于之后的计算。
+记录每个s1字符串结束时，此时总共有几个s2字符串，即repeat[i] = cnt, 表示在遍历完第i个s1字符串时，总共出现了cnt个s2字符串
+当nextIndex[k] != -1时说明出现repeat Circle，其起始点start = nextIndex[k]，三部分
+开头部分，就是出现repeat Circle之前，为repeat[start]
+循环部分，(n1 - start) / (i - start) * (cnt - repeat[start])，i和cnt都是当前的第i个s1字符串和当前总共有多少cnt，计算循环部分
+结尾部分，repeat[start + (n1 - start) % (i - start)] - repeat[start]，注意记得计算完剩余循环部分的之后要加上start部分，再计算从头到这个位置，有多少个s2，然后减去start之前的s2的个数。
+一开始无法理解为什么一定会限制在已经计算的范围内，把整个模型当做链表就可以想通了，循环起点+循环剩余部分，一定已经计算过了，
+其实整条链都已经计算过了
+
+Code:
+class Solution {
+public:
+    int getMaxRepetitions(string s1, int n1, string s2, int n2) {
+        // int res = 0;
+        // int S1index = 0, S2index = 0;
+        // int endIndex = 0;
+        // if (n1 == 0) return 0;
+        // while (S1index < n1 * s1.size()) {
+        //     while (s1[S1index % s1.size()] != s2[S2index % s2.size()] && S1index < n1 * s1.size()) S1index ++;
+        //     S1index ++;
+        //     S2index ++;
+        //     if (S2index % s2.size() == 0) {
+        //         // first time to reach the s2 end
+        //         if (S2index == s2.size()) {
+        //             endIndex = S1index;
+        //         // second time to reach the s2 end, get the repeat circle
+        //         } else if (S1index % s1.size() == endIndex % s1.size()) {
+        //             int times = (n1 * s1.size() - S1index) / (S1index - endIndex);
+        //             // repeat times equals, s1 repeat circle length is S1index - endIndex
+        //             S1index += times * (S1index - endIndex);
+        //             // s2 repeat circle length is S2index - s2.size()
+        //             S2index += times * (S2index - s2.size());
+        //         }
+        //         // just keep go on the while loop, deal with the remaining parts
+        //     }
+        // }
+        // return S2index / s2.size() / n2;
+
+        vector<int> visit(s2.size() + 1, -1);
+        int cnt = 0;
+        unordered_map<int, int> repeatCount;
+        visit[0] = 0;
+        int k = 0;
+        for (int i = 1; i <= n1; i ++) {
+            for (int j = 0; j < s1.size(); j ++) {
+                if (s1[j] == s2[k]) {
+                    k ++;
+                    if (k == s2.size()) {
+                        cnt ++;
+                        k = 0;
+                    }
+                }
+            }
+
+            if (visit[k] == -1) {
+                visit[k] = i;
+                repeatCount.insert(make_pair(i, cnt));
+            } else {
+                int start = visit[k];
+                int repeatS1Num = i - start;
+                int repeats2Num = cnt - repeatCount[start];
+                int ansforSingles2 = repeatCount[start] + (n1 - start) / repeatS1Num * repeats2Num + repeatCount[start + (n1 - start) % repeatS1Num] - repeatCount[start];
+                return ansforSingles2 / n2;
+            }
+
+
+        }
+        
+        return cnt / n2;
+    }
+};
+
