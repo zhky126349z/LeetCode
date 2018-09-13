@@ -180,3 +180,4 @@
 2018.09.10 打卡[LeetCode 520. Detect Capital], N/A<br>
 2018.09.10 打卡[LeetCode 704. Binary Search], BinarySearch<br>
 2018.09.12 打卡[LeetCode 466. Count The Repetitions], String<br>
+2018.09.13 打卡[LeetCode 116. Populating Next Right Pointers in Each Node], Tree<br>
