@@ -182,3 +182,4 @@
 2018.09.12 打卡[LeetCode 466. Count The Repetitions], String<br>
 2018.09.13 打卡[LeetCode 116. Populating Next Right Pointers in Each Node], Tree<br>
 2018.09.13 打卡[LeetCode 686. Repeated String Match], N/A<br>
+2018.09.20 打卡[LeetCode 876. Middle of the Linked List], LinkedList<br>
