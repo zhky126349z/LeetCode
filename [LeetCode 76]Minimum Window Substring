@@ -1,0 +1,58 @@
+Description:
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+Example:
+
+Input: S = "ADOBECODEBANC", T = "ABC"
+Output: "BANC"
+Note:
+
+If there is no such window in S that covers all characters in T, return the empty string "".
+If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
+
+Solution:
+在原串中找能够覆盖模式串的最短子串，毫无疑问是滑动窗口，
+但是在使用hashmap存储原串和模式串的出现字符数，再去比对需要花费时间较久，考虑进行优化。
+细化问题，只要子串中出现了所有模式串的字符，就表示该子串满足条件，再用滑动窗口去缩短window大小。
+用count表示总共有多少没有在子串中出现的字符串，pat数组记录模式串中每个字符的剩余需要次数。
+因此，遍历原串每个字符，开始时left = 0，
+每次遇到一个新字符时，如果该字符所需剩余次数>0，则这个字符满足了条件，count--，pat[s[i]]--
+直到count==0时，表示所有需求都被满足了，
+此时需要缩短左侧left，遇到一个字符时，如果它的剩余所需次数是小于0的，则表明他并未为count提供贡献，补回pat[s[left]]
+如果它的剩余所需次数==0时，表示该字符为count提供了贡献，需要把count补回，所以count++, pat[s[left]],
+并且需要继续往右扩展。
+为什么只考虑它剩余次数==0的时候，因为一旦出现count!=0，那就意味着需要向右扩展，不会再出现剩余次数更大的情况
+
+Code:
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        vector<int> pat(256, 0);
+        int count = 0;
+        int left = 0;
+        int begin = 0;
+        int res = INT_MAX;
+        for (auto ch : t) {
+            pat[ch]++;
+            count++;
+        }
+        for (int i = 0; i < s.size(); i ++) {
+            if (pat[s[i]] > 0) {
+                count --;
+            }
+            pat[s[i]]--;
+            while (count == 0) {
+                if (i - left + 1 < res) {
+                    res = i - left + 1;
+                    begin = left;
+                }
+                if (pat[s[left]] == 0) {
+                    count ++;
+                }
+                pat[s[left]]++;
+                left++;
+            }
+        }
+        return res == INT_MAX ? "" : s.substr(begin, res);
+    }
+};
