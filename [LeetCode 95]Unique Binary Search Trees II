@@ -1,0 +1,75 @@
+Description:
+Given an integer n, generate all structurally unique BST's (binary search trees) that store values 1 ... n.
+
+Example:
+
+Input: 3
+Output:
+[
+  [1,null,3,2],
+  [3,2,null,1],
+  [3,1,null,null,2],
+  [2,1,3],
+  [1,null,2,null,3]
+]
+Explanation:
+The above output corresponds to the 5 unique BST's shown below:
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+   
+Solution:
+生成所有组合形式，记忆化搜索，区间的生成结果是固定的，遍历区间长度，遍历起始点，遍历数字作为根节点
+   
+Code:
+//  struct TreeNode {
+//     int val;
+//     TreeNode *left;
+//     TreeNode *right;
+//     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+//  };
+
+class Solution {
+private:
+    map<pair<int, int>, vector<TreeNode*>> mem;
+
+public:
+    vector<TreeNode*> generateTrees(int n) {
+        // length
+        for (int i = 1; i <= n; i ++) {
+            // start
+            for (int st = 1; st <= n - i + 1; st ++) {
+                int ed = st + i - 1;
+                mem[make_pair(st, ed)] = vector<TreeNode*>();
+                if (st == ed) {
+                    mem[make_pair(st, ed)].push_back(new TreeNode(st));
+                } else {
+                    for (int rt = st; rt <= ed; rt ++) {
+                        vector<TreeNode*> le;
+                        vector<TreeNode*> ri;
+                        le.push_back(NULL); ri.push_back(NULL);
+                        if (mem.find(make_pair(st, rt - 1)) != mem.end()) {
+                            le = mem[make_pair(st, rt - 1)];
+                        }
+                        if (mem.find(make_pair(rt + 1, ed)) != mem.end()) {
+                            ri = mem[make_pair(rt + 1, ed)];
+                        }
+                        for (auto leftNode : le) {
+                            for (auto rightNode : ri) {
+                                TreeNode* newRt = new TreeNode(rt);
+                                newRt->left = leftNode;
+                                newRt->right = rightNode;
+                                mem[make_pair(st, ed)].push_back(newRt);
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        }
+        return mem[make_pair(1, n)];
+    }
+};
