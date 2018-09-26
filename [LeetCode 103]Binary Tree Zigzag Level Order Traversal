@@ -1,0 +1,70 @@
+Description:
+
+Given a binary tree, return the zigzag level order traversal of its nodes' values. (ie, from left to right, then right to left for the next level and alternate between).
+
+For example:
+Given binary tree [3,9,20,null,null,15,7],
+    3
+   / \
+  9  20
+    /  \
+   15   7
+return its zigzag level order traversal as:
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+
+Solution:
+层序遍历的进阶版，zigzag level
+首先想到的是level traversal，然后继续层数，在特定层数reverse一下答案，简单快捷。
+然后觉得deque可以做，存一个NULL在中间作为标识，然后记录一个向左还是向右，判断是插头还是插尾，以及先右还是先左
+注意取反需要用"!"，不是"~"
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        deque<TreeNode*> dq;
+        TreeNode* cur;
+        bool leftToRight = true;
+        vector<vector<int>> res;
+        if (root == NULL) return res;
+        dq.push_front(NULL);
+        dq.push_front(root);
+        while (!dq.empty()) {
+            vector<int> line;
+            if (leftToRight) {
+                while(dq.front() != NULL) {
+                    cur = dq.front();
+                    dq.pop_front();
+                    line.push_back(cur->val);
+                    if (cur->left) dq.push_back(cur->left);
+                    if (cur->right) dq.push_back(cur->right);
+                }
+            } else {
+                while(dq.back() != NULL) {
+                    cur = dq.back();
+                    dq.pop_back();
+                    line.push_back(cur->val);
+                    if (cur->right) dq.push_front(cur->right);
+                    if (cur->left) dq.push_front(cur->left);
+                }
+            }
+            res.push_back(line);
+            leftToRight = !leftToRight;
+            if (dq.front() == NULL && dq.back() == NULL) break;
+        }
+        return res;
+    }
+};
