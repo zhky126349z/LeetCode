@@ -1,0 +1,66 @@
+Description:
+Given inorder and postorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+For example, given
+
+inorder = [9,3,15,20,7]
+postorder = [9,15,7,20,3]
+Return the following binary tree:
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+   
+Solution:
+中序后序生成树。这用迭代和栈的方法实现了一次，跟前序和中序差不多，因为后序基本等价于前序的反转。
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        stack<TreeNode*> st;
+        unordered_map<int, int> map;
+        if (inorder.size() == 0 || postorder.size() == 0 || inorder.size() != postorder.size()) {
+            return NULL;
+        }
+
+        for (int i = 0; i < inorder.size(); i++) {
+            map.insert(make_pair(inorder[i], i));
+        }
+
+        TreeNode* root = new TreeNode(postorder[postorder.size() - 1]);
+        st.push(root);
+        
+        for (int i = postorder.size() - 2; i >= 0; i--) {
+            int value = postorder[i];
+            TreeNode* node = new TreeNode(value);
+
+            if (map[st.top()->val] < map[value]) {
+                st.top()->right = node;
+            } else {
+                TreeNode* parent;
+                while (!st.empty() && map[st.top()->val] > map[value]) {
+                    parent = st.top();
+                    st.pop();
+                }
+                parent->left = node;
+            }
+            st.push(node);
+        }
+        return root;
+    }
+};
