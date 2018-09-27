@@ -188,3 +188,5 @@
 2018.09.25 打卡[LeetCode 95. Unique Binary Search Trees II], Tree/MemorySearch<br>
 2018.09.25 打卡[LeetCode 99. Recover Binary Search Tree], Tree<br>
 2018.09.26 打卡[LeetCode 100. Same Tree], Tree<br>
+2018.09.27 打卡[LeetCode 105. Construct Binary Tree from Preorder and Inorder Traversal], Tree<br>
+2018.09.27 打卡[LeetCode 106. Construct Binary Tree from Inorder and Postorder Traversal], Tree<br>
