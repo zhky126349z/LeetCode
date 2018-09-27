@@ -1,0 +1,60 @@
+Description:
+Given preorder and inorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+For example, given
+
+preorder = [3,9,20,15,7]
+inorder = [9,3,15,20,7]
+Return the following binary tree:
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+   
+Solution:
+前序中序生成树。普通方法递归，根据preorder的根，在inorder中确定左子树和右子树的范围，递归生成，单个结点时返回自身，超出范围时注意范围NULL
+迭代方法，先用一个map记录inorder里所有值和位置的映射，然后遍历preorder里的结点，
+如果新的结点在inorder里的位置比栈顶元素小，则它肯定是栈顶元素的左子树，
+如果新的结点在inorder里的位置比栈顶元素大，则不断pop()直到栈为空或栈顶元素比他大，它即为最后出栈元素的右子树，
+把新结点压栈。
+
+Code:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+private:
+    TreeNode* build(vector<int>& preorder, vector<int>& inorder, int rootIndex, int inBegin, int inEnd) {
+        if (rootIndex >= preorder.size()) return NULL;
+        if (inBegin > inEnd) return NULL;
+        TreeNode* root = new TreeNode(preorder[rootIndex]);
+        if (inBegin == inEnd) return root;
+        int inOrderRootIndex = -1;
+        for (int i = inBegin; i <= inEnd; i ++) {
+            if (inorder[i] == preorder[rootIndex]) {
+                inOrderRootIndex = i;
+                break;
+            }
+        }
+        root->left = build(preorder, inorder, rootIndex + 1, inBegin, inOrderRootIndex - 1);
+        root->right = build(preorder, inorder, rootIndex + inOrderRootIndex - inBegin + 1, inOrderRootIndex + 1, inEnd);
+        return root;
+    }
+
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (preorder.size() == 0 || inorder.size() == 0 || preorder.size() != inorder.size()) return NULL;
+        return build(preorder, inorder, 0, 0, inorder.size() - 1);
+    }
+};
