@@ -194,3 +194,4 @@
 2018.09.27 打卡[LeetCode 111. Minimum Depth of Binary Tree], Tree<br>
 2018.09.27 打卡[LeetCode 112. Path Sum], Tree/DFS<br>
 2018.09.28 打卡[LeetCode 885. Spiral Matrix III], N/A<br>
+2018.09.29 打卡[LeetCode 404. Sum of Left Leaves], Tree<br>
