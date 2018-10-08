@@ -1,0 +1,113 @@
+Description:
+You are asked to cut off trees in a forest for a golf event. The forest is represented as a non-negative 2D map, in this map:
+
+0 represents the obstacle can't be reached.
+1 represents the ground can be walked through.
+The place with number bigger than 1 represents a tree can be walked through, and this positive number represents the tree's height.
+You are asked to cut off all the trees in this forest in the order of tree's height - always cut off the tree with lowest height first. And after cutting, the original place has the tree will become a grass (value 1).
+
+You will start from the point (0, 0) and you should output the minimum steps you need to walk to cut off all the trees. If you can't cut off all the trees, output -1 in that situation.
+
+You are guaranteed that no two trees have the same height and there is at least one tree needs to be cut off.
+
+Example 1:
+Input: 
+[
+ [1,2,3],
+ [0,0,4],
+ [7,6,5]
+]
+Output: 6
+Example 2:
+Input: 
+[
+ [1,2,3],
+ [0,0,0],
+ [7,6,5]
+]
+Output: -1
+Example 3:
+Input: 
+[
+ [2,3,4],
+ [0,0,5],
+ [8,7,6]
+]
+Output: 6
+Explanation: You started from the point (0,0) and you can cut off the tree in (0,0) directly without walking.
+Hint: size of the given matrix will not exceed 50x50.
+
+Solution:
+先按照值排序，并记录坐标，c++里可以直接用一个vector<vector<int>>来存一条记录，值在首位，直接对整个排序，就可以了。
+接着就是找两两之间最短路径，看了下SPFA比用Floyd快多了，可以做的还是。
+正常思路就是BFS直接找，可以过，犯了几个错误，
+vis设置的不对，压pair<int, int>的时候可以直接{x, x}压，忘记pop，层序遍历可以在每层遍历的时候取size固定pop次数就行了。
+然后普通bfs四个方向都搜索，有一种算法叫hadlock's algorithm，
+首先标记所有在start到end的Manhattan路径上的点，记为0，如果没法到达，然后找向Manhattan路径远离1步的路径，就是所有0往远离终点的方向没标记的格延伸为1，
+直到最终标记到终点，最终距离就是Manhattan距离+2*远离距离。
+或者用优先队列做一个A*算法
+
+Code：
+class Solution {
+private:
+    static bool cmp(pair<int, int> a, pair<int, int> b) {
+        if (a.second < b.second) return true;
+        return false;
+    }
+
+    int bfs(int start, int end, vector<vector<int>>& forest, int n, int m) {
+        if (start == end) return 0;
+        vector<vector<int>> dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        pair<int, int> st = {start / m, start % m};
+        pair<int, int> ed = {end / m, end % m};
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        vis[st.first][st.second] = true;
+        queue<pair<int, int>> qu;
+        int level = 0;
+        qu.push(st);
+        while(!qu.empty()) {
+            int sz = qu.size();
+            level++;
+            for (int j = 0; j < sz; j ++) {
+                pair<int, int> cur = qu.front();
+                qu.pop();
+                for (int i = 0; i < 4; i ++) {
+                    int nr = cur.first + dir[i][0];
+                    int nl = cur.second + dir[i][1];
+                    if (nr < 0 || nr >= n || nl < 0 || nl >= m || vis[nr][nl] == true || forest[nr][nl] == 0) continue;
+                    if (nr == ed.first && nl == ed.second) return level;
+                    qu.push({nr, nl});
+                    vis[nr][nl] = true;
+                }
+            }
+        }
+        return -1;
+    }
+
+public:
+    int cutOffTree(vector<vector<int>>& forest) {
+        int n = forest.size();
+        if (n == 0) return -1;
+        int m = forest[0].size();
+        if (m == 0) return -1;
+        int res = 0;
+        vector<pair<int, int>> order;
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < m; j ++) {
+                if (forest[i][j] == 0) continue;
+                int num = j + i * m;
+                order.push_back({num, forest[i][j]});
+            }
+        }
+
+        int start = 0;
+        sort(order.begin(), order.end(), cmp);
+        for (int i = 0; i < order.size(); i ++) {
+            int tmp = bfs(start, order[i].first, forest, n, m);
+            if (tmp == -1) return -1;
+            res += tmp;
+            start = order[i].first;
+        }
+        return res;
+    }
+};
