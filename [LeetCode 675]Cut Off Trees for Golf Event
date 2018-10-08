@@ -45,7 +45,9 @@ vis设置的不对，压pair<int, int>的时候可以直接{x, x}压，忘记pop
 然后普通bfs四个方向都搜索，有一种算法叫hadlock's algorithm，
 首先标记所有在start到end的Manhattan路径上的点，记为0，如果没法到达，然后找向Manhattan路径远离1步的路径，就是所有0往远离终点的方向没标记的格延伸为1，
 直到最终标记到终点，最终距离就是Manhattan距离+2*远离距离。
-或者用优先队列做一个A*算法
+或者用优先队列做一个A*算法。
+
+https://leetcode.com/problems/cut-off-trees-for-golf-event/discuss/148935/C++-3-methods-beat-99
 
 Code：
 class Solution {
