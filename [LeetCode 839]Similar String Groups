@@ -1,0 +1,71 @@
+Description:
+Two strings X and Y are similar if we can swap two letters (in different positions) of X, so that it equals Y.
+
+For example, "tars" and "rats" are similar (swapping at positions 0 and 2), and "rats" and "arts" are similar, but "star" is not similar to "tars", "rats", or "arts".
+
+Together, these form two connected groups by similarity: {"tars", "rats", "arts"} and {"star"}.  Notice that "tars" and "arts" are in the same group even though they are not similar.  Formally, each group is such that a word is in the group if and only if it is similar to at least one other word in the group.
+
+We are given a list A of strings.  Every string in A is an anagram of every other string in A.  How many groups are there?
+
+Example 1:
+
+Input: ["tars","rats","arts","star"]
+Output: 2
+Note:
+
+A.length <= 2000
+A[i].length <= 1000
+A.length * A[i].length <= 20000
+All words in A consist of lowercase letters only.
+All words in A have the same length and are anagrams of each other.
+The judging time limit has been increased for this question.
+
+Solution:
+并查集或者BFS，
+并查集就，先初始化，然后O(n^2)遍历两两string，判断是否连接，如果连接则合并，即找到他们的father之后将他们其中一个的father合并到另一个上去
+BFS就，直接开始，获得所有变换然后压队，在原集合里去除这些已经计算过的string，从一个string开始一直变换完后继续原集合中下一个string，直到原集合为空
+
+Code:
+class Solution {
+private:
+    bool check(string a, string b) {
+        int cnt = 0;
+        for (int i = 0; i < a.size(); i ++) {
+            if (a[i] != b[i] && ++cnt > 2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    int find(vector<int>& fa, int i) {
+        while(fa[i] != i) {
+            i = fa[i];
+        }
+        return i;
+    }
+
+public:
+    int numSimilarGroups(vector<string>& A) {
+        if (A.size() == 0) return 0;
+        int n = A.size();
+        int res = n;
+        vector<int> fa(n, 0);
+        for (int i = 0; i < n; i ++) {
+            fa[i] = i;
+        }
+        
+        for (int i = 0; i < n - 1; i ++) {
+            for (int j = i + 1; j < n; j ++) {
+                if (check(A[i], A[j])) {
+                    int iFa = find(fa, i);
+                    int jFa = find(fa, j);
+                    if (iFa == jFa) continue;
+                    fa[jFa] = iFa;
+                    res--;
+                }
+            }
+        }
+        return res;
+    }
+};
