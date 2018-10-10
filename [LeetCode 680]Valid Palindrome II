@@ -1,0 +1,42 @@
+Description:
+Given a non-empty string s, you may delete at most one character. Judge whether you can make it a palindrome.
+
+Example 1:
+Input: "aba"
+Output: True
+Example 2:
+Input: "abca"
+Output: True
+Explanation: You could delete the character 'c'.
+
+Solution:
+一个字符出错，出错了就check跳过这个不匹配字符的两种可能
+
+Code:
+class Solution {
+public:
+    bool validPalindrome(string s) {
+        if (s.size() == 0) return false;
+        int st = 0, ed = s.size() - 1;
+        while(st <= ed && s[st] == s[ed]) {
+            st++;
+            ed--;
+        }
+        if (st < ed) {
+            return check(s.substr(st + 1, ed - st)) || check(s.substr(st, ed - st));
+        }
+        return true;
+    }
+
+    bool check(string s) {
+         int st = 0, ed = s.size() - 1;
+         while(st <= ed && s[st] == s[ed]) {
+             st++;
+             ed--;
+         }
+         if (st > ed) {
+             return true;
+         }
+         return false;
+    }
+};
