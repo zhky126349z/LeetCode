@@ -203,3 +203,4 @@
 2018.10.10 打卡[LeetCode 623. Add One Row to Tree], Tree/BFS/DFS<br>
 2018.10.10 打卡[LeetCode 795. Number of Subarrays with Bounded Maximum], Array<br>
 2018.10.16 打卡[LeetCode 752. Open the Lock], BFS<br>
+2018.10.16 打卡[LeetCode 344. Reverse String], N/A<br>
