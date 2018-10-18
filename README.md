@@ -208,3 +208,4 @@
 2018.10.18 打卡[LeetCode 517. Super Washing Machines], N/A<br>
 2018.10.18 打卡[LeetCode 217. Contains Duplicate], Set<br>
 2018.10.18 打卡[LeetCode 492. Construct the Rectangle], N/A<br>
+2018.10.18 打卡[LeetCode 896. Monotonic Array], N/A<br>
