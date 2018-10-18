@@ -1,0 +1,70 @@
+Description:
+You have n super washing machines on a line. Initially, each washing machine has some dresses or is empty.
+
+For each move, you could choose any m (1 ≤ m ≤ n) washing machines, and pass one dress of each washing machine to one of its adjacent washing machines at the same time .
+
+Given an integer array representing the number of dresses in each washing machine from left to right on the line, you should find the minimum number of moves to make all the washing machines have the same number of dresses. If it is not possible to do it, return -1.
+
+Example1
+
+Input: [1,0,5]
+
+Output: 3
+
+Explanation: 
+1st move:    1     0 <-- 5    =>    1     1     4
+2nd move:    1 <-- 1 <-- 4    =>    2     1     3    
+3rd move:    2     1 <-- 3    =>    2     2     2   
+Example2
+
+Input: [0,3,0]
+
+Output: 2
+
+Explanation: 
+1st move:    0 <-- 3     0    =>    1     2     0    
+2nd move:    1     2 --> 0    =>    1     1     1     
+Example3
+
+Input: [0,2,0]
+
+Output: -1
+
+Explanation: 
+It's impossible to make all the three washing machines have the same number of dresses. 
+Note:
+The range of n is [1, 10000].
+The range of dresses number in a super washing machine is [0, 1e5].
+
+Solution:
+转移一定是固定的，通过遍历一边可以获得所有机器的向左和向右转移了多少个，
+向左转移L个，向右转移R个，
+1. L>0 && R>0，res = max(res, L + R);
+2. 其他因为不会出现该机器同时向左或向右，所以，res = max(res, max(L, R))
+因为可以同时多台机器进行转移，最后的最终步数肯定是单个机器的最多转移次数（证明？）
+
+Code:
+class Solution {
+public:
+    int findMinMoves(vector<int>& machines) {
+        int sum = 0, avg = 0, res = 0, preLoad = 0;
+        for (auto machine : machines) {
+            sum += machine;
+        }
+        if (sum % machines.size() != 0) return -1;
+        avg = sum / machines.size();
+        for (int i = 0; i < machines.size(); i ++) {
+            int load = machines[i] - avg;
+            if (preLoad >= 0 || (preLoad < 0 && load < 0)) {
+                res = max(res, max(preLoad, abs(load)));
+            } else if (preLoad < 0 && load >= 0) {
+                res = max(res, abs(preLoad) + abs(load));
+            }
+            preLoad = load;
+            if (i + 1 < machines.size()) {
+                machines[i + 1] += load;
+            }
+        }
+        return res;
+    }
+};
