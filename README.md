@@ -205,3 +205,4 @@
 2018.10.16 打卡[LeetCode 752. Open the Lock], BFS<br>
 2018.10.16 打卡[LeetCode 344. Reverse String], N/A<br>
 2018.10.17 打卡[LeetCode 838. Push Dominoes], Deque/TwoPointers<br>
+2018.10.18 打卡[LeetCode 517. Super Washing Machines], N/A<br>
